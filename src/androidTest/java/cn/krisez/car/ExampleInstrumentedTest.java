@@ -4,8 +4,14 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.google.gson.JsonObject;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import cn.krisez.car.Network.MySubscribe;
+import cn.krisez.car.Network.NetUtil;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import static org.junit.Assert.*;
 
@@ -22,5 +28,20 @@ public class ExampleInstrumentedTest {
         Context appContext = InstrumentationRegistry.getTargetContext();
 
         assertEquals("cn.krisez.car", appContext.getPackageName());
+    }
+    @Test
+    public void add(){
+        NetUtil.INSTANCE().create(new MySubscribe<JsonObject>() {
+
+            @Override
+            public void onNext(JsonObject jsonObject) {
+                System.out.println(jsonObject.toString());
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        },"123","123",true);
     }
 }

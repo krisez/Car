@@ -9,9 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
 import com.google.gson.JsonObject;
 
+import cn.krisez.car.ImageManage.ImgManager;
 import cn.krisez.car.Network.MySubscribe;
 import cn.krisez.car.Network.NetUtil;
 
@@ -34,18 +36,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        NetUtil.INSTANCE().create(new MySubscribe<JsonObject>() {
-
-            @Override
-            public void onNext(JsonObject jsonObject) {
-                System.out.println(jsonObject.toString());
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        },"123","123",true);
+        ImgManager.INSTANCE().bind(this).load("http://www.krisez.cn/xx.jpg").into(new ImageView(this));
     }
 
     @Override
