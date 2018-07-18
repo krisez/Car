@@ -1,5 +1,7 @@
 package cn.krisez.car.Network;
 
+import com.google.gson.JsonObject;
+
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -57,9 +59,9 @@ public class NetUtil {
         addCallAdapter = true;
     }
 
-    public void create(Observer<?> observer, String u, String p, boolean isMain){
-       // ReService reService = mRetrofit.create(ReService.class);
-       // createRx(reService.getSearchBook(u,p),observer,isMain);
+    public void create(Observer<JsonObject> observer, String u, String p, boolean isMain){
+        NetServiceApi api = mRetrofit.create(NetServiceApi.class);
+        createRx(api.getR(u,p),observer,isMain);
     }
 
     public void create(Observer<?> observer,String u,String p,boolean isMain,int type){
