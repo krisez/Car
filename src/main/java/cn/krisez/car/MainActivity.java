@@ -1,5 +1,6 @@
 package cn.krisez.car;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        ImgManager.INSTANCE().bind(this).load("http://www.krisez.cn/xx.jpg").into(new ImageView(this));
+
     }
 
     @Override
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(MainActivity.this,PeopleActivity.class ));
             return true;
         }
 

@@ -1,5 +1,7 @@
 package cn.krisez.car.Network;
 
+import android.content.Context;
+
 import com.google.gson.JsonObject;
 
 import java.util.concurrent.TimeUnit;
@@ -17,6 +19,7 @@ public class NetUtil {
     private volatile static NetUtil INSTANCE;
     private static Retrofit mRetrofit;
     private static boolean addCallAdapter = false;
+    private Context mContext;
 
     private NetUtil() {
     }
@@ -32,7 +35,12 @@ public class NetUtil {
                 }
             }
         }
+
         return INSTANCE;
+    }
+
+    public void serC(Context context){
+        this.mContext = context;
     }
 
     /**
