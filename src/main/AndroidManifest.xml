@@ -15,6 +15,10 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <!--允许程序访问CellID或WiFi热点来获取粗略的位置-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!--用于访问GPS定位-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!--用于申请调用A-GPS模块-->
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -35,6 +39,7 @@
         </activity>
         <activity android:name=".PeopleActivity"/>
         <meta-data android:name="com.amap.api.v2.apikey" android:value="dbd1f8277cad3f79f9bb37c944a1af2b"/>
+        <service android:name="com.amap.api.location.APSService"/>
     </application>
 
 </manifest>
