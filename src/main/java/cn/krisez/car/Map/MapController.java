@@ -19,6 +19,8 @@ import com.amap.api.maps.MapView;
 import com.amap.api.maps.TextureMapView;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.CameraPosition;
+import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 
 import cn.krisez.car.R;
@@ -62,27 +64,21 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
 
     private boolean isFirst = true;
     public MapController defaultAmap() {
-        /*//放在client设置前面
-        if (mLocationSource == null) {
-            //TODO：理解为什么? 顺序问题？
-            mMap.setLocationSource(this);
-        } else {
-            mMap.setLocationSource(mLocationSource);
-        }*/
+
         //显示定位按钮是否可以点击
-        myLocationStyle = new MyLocationStyle();//初始化定位蓝点样式类myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);//连续定位、且将视角移动到地图中心点，定位点依照设备方向旋转，并且会跟随设备移动。（1秒1次定位）如果不设置myLocationType，默认也会执行此种模式。
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);//指南针
         mMap.moveCamera(CameraUpdateFactory.zoomTo(16.5f));
         //定位按钮显示
+        myLocationStyle = new MyLocationStyle();//初始化定位蓝点样式类myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);//连续定位、且将视角移动到地图中心点，定位点依照设备方向旋转，并且会跟随设备移动。（1秒1次定位）如果不设置myLocationType，默认也会执行此种模式。
         myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE);
         myLocationStyle.myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.w));
         myLocationStyle.strokeColor(Color.WHITE);
         myLocationStyle.radiusFillColor(Color.argb(100, 20, 12, 20));
         myLocationStyle.anchor(0.5f,0.7f);
         mMap.setMyLocationStyle(myLocationStyle);//设置定位蓝点的Style
-
-
+        //显示定位层以及是否定位
+        mMap.setMyLocationEnabled(true);
 
         mMap.setOnCameraChangeListener(new AMap.OnCameraChangeListener() {
             @Override
@@ -100,15 +96,17 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
                 }
             }
         });
-        mMap.setOnMyLocationChangeListener(new AMap.OnMyLocationChangeListener() {
-            @Override
-            public void onMyLocationChange(Location location) {
-
-            }
-        });
-        //显示定位层以及是否定位
-        mMap.setMyLocationEnabled(true);
         return this;
+    }
+
+    private Marker mMarker;
+    public MapController setMarkerOption(MarkerOptions option){
+        mMarker = new MapMarker(mMapView,mContext).getMarker(option);
+        return this;
+    }
+
+    public Marker getMarker(){
+        return mMarker;
     }
 
     public void onSaveInstanceState(Bundle bundle) {

@@ -11,9 +11,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;
+import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MyTrafficStyle;
 
 import cn.krisez.car.Map.MapController;
@@ -51,6 +53,15 @@ public class MainActivity extends BasePermissionsActivity
         myTrafficStyle.setSmoothColor(Color.parseColor("#5c71fc71"));
         aMap.setMyTrafficStyle(myTrafficStyle);
         aMap.setTrafficEnabled(true);
+
+        //Marker marker = controller.setMarkerOption(null).getMarker();
+        /*aMap.setOnMarkerClickListener(new AMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                Toast.makeText(MainActivity.this, "点击Marker", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });*/
 
     }
 
