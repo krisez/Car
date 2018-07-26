@@ -1,5 +1,6 @@
 package cn.krisez.car.Map;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
@@ -19,9 +20,13 @@ import com.amap.api.maps.MapView;
 import com.amap.api.maps.TextureMapView;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.CameraPosition;
+import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.amap.api.maps.model.Polyline;
+
+import java.util.List;
 
 import cn.krisez.car.R;
 
@@ -33,8 +38,6 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
     private AMap mMap;
     private AMapLocationClient aMapLocationClient;
     private MyLocationStyle myLocationStyle;
-
-   // private LocationSource mLocationSource;
 
     public MapController(Context context) {
         this.mContext = context;
@@ -54,11 +57,6 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
     public MapController map(TextureMapView mapView) {
         this.mTextureMapView = mapView;
         this.mMap = mapView.getMap();
-        return this;
-    }
-
-    public MapController locateSource(LocationSource locationSource) {
-       // this.mLocationSource = locationSource;
         return this;
     }
 
@@ -99,14 +97,41 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
         return this;
     }
 
+    /**
+     * marker设置处
+     */
     private Marker mMarker;
     public MapController setMarkerOption(MarkerOptions option){
-        mMarker = new MapMarker(mMapView,mContext).getMarker(option);
+        mMarker = new MapMarker(mMapView).getMarker(option);
         return this;
     }
 
     public Marker getMarker(){
         return mMarker;
+    }
+
+    /**
+     * trace 设置处
+     */
+
+    private MapTrace mMapTrace;
+    public MapController setTrace(int id){
+        mMapTrace = new MapTrace(mMapView);
+        mMapTrace.startTrace(id);
+        return this;
+    }
+
+    public Animator getMarkerAnimator(float duration){
+        return mMapTrace.setAnimation(mMarker,duration);
+    }
+
+    public List<LatLng> getTracePoints(){
+        return mMapTrace.getPolyline().getPoints();
+    }
+
+    public MapController clearTrace(){
+        mMapTrace.getPolyline().remove();
+        return this;
     }
 
     public void onSaveInstanceState(Bundle bundle) {
@@ -166,58 +191,5 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
         }
     }
 
-    /**
-     * map.setLocationSource();
-     */
-   /* @Override
-    public void activate(final OnLocationChangedListener onLocationChangedListener) {
-       // mListener = onLocationChangedListener;
-        if (aMapLocationClient == null) {
-            aMapLocationClient = new AMapLocationClient(mContext);
-        }
-        // 设置定位监听
-        aMapLocationClient.setLocationListener(this);
-        if (mLocationOption == null) {
-            mLocationOption = new AMapLocationClientOption();
-        }
-        // 设置为高精度定位模式
-        mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
-        // 只是为了获取当前位置，所以设置为单次定位
-        mLocationOption.setOnceLocation(true);
-        // 设置定位参数
-        aMapLocationClient.setLocationOption(mLocationOption);
-        aMapLocationClient.startLocation();
-
-    }*/
-
-  /*  @Override
-    public void deactivate() {
-        if (aMapLocationClient != null) {
-            aMapLocationClient.stopLocation();
-            aMapLocationClient.onDestroy();
-        }
-        aMapLocationClient = null;
-    }*/
-
-
-    /**
-     * AMapLocationClient.setLocationChangeListener();
-     */
-
-   /* @Override
-    public void onLocationChanged(AMapLocation aMapLocation) {
-        if (mListener != null && aMapLocation != null) {
-            if (aMapLocation.getErrorCode() == 0) {
-                mListener.onLocationChanged(aMapLocation);// 显示系统小蓝点
-            } else {
-                String errText = "定位失败," + aMapLocation.getErrorCode() + ": "
-                        + aMapLocation.getErrorInfo();
-                Log.e("AmapErr", errText);
-            }
-        }
-    }
-
-    private OnLocationChangedListener mListener;
-    private AMapLocationClientOption mLocationOption;*/
 
 }

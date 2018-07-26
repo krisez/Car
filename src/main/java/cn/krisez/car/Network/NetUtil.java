@@ -2,10 +2,13 @@ package cn.krisez.car.Network;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import cn.krisez.car.entity.CarRoute;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -49,11 +52,12 @@ public class NetUtil {
      * @return
      */
     private static void init() {
-        OkHttpClient okHttpClient = new OkHttpClient.Builder().connectTimeout(3, TimeUnit.SECONDS)
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(3, TimeUnit.SECONDS)
                 .readTimeout(3,TimeUnit.SECONDS).build();
         mRetrofit = new Retrofit.Builder()
                 .client(okHttpClient)
-                .baseUrl("http://law.krisez.cn/")
+                .baseUrl("http://krisez.cn/map/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
@@ -70,6 +74,11 @@ public class NetUtil {
     public void create(Observer<JsonObject> observer, String u, String p, boolean isMain){
         NetServiceApi api = mRetrofit.create(NetServiceApi.class);
         createRx(api.getR(u,p),observer,isMain);
+    }
+
+    public void create(Observer<List<CarRoute>> observer, int id, boolean isMain){
+        NetServiceApi api = mRetrofit.create(NetServiceApi.class);
+        createRx(api.getRoutes(),observer,isMain);
     }
 
     public void create(Observer<?> observer,String u,String p,boolean isMain,int type){

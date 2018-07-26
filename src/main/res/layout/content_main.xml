@@ -14,4 +14,61 @@
         android:layout_height="match_parent">
     </com.amap.api.maps.MapView>
 
+    <TextView
+        android:id="@+id/tv_show_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#fff"
+        android:textColor="#000"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="100dp"
+        tools:text="当前时速：20km"
+        />
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <Button
+            android:id="@+id/start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="start"
+            android:onClick="startAnimation"
+            app:layout_constraintBottom_toTopOf="@+id/trace"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            app:layout_constraintStart_toEndOf="@id/start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="pause"
+            android:onClick="pause"/>
+        <Button
+            android:id="@+id/trace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="trace"
+            android:text="trace"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="clear"
+            android:text="clear"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/trace" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="setMarker"
+            android:text="animation"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/clear" />
+    </android.support.constraint.ConstraintLayout>
+
 </android.support.constraint.ConstraintLayout>

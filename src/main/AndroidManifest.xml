@@ -38,7 +38,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".PeopleActivity"/>
-        <meta-data android:name="com.amap.api.v2.apikey" android:value="dbd1f8277cad3f79f9bb37c944a1af2b"/>
+        <meta-data android:name="com.amap.api.v2.apikey" android:value="fce72687dada627d838424c0cf3bbf42"/>
         <service android:name="com.amap.api.location.APSService"/>
     </application>
 
