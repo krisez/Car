@@ -37,6 +37,7 @@ import java.util.Locale;
 
 import cn.krisez.car.Map.MapController;
 import cn.krisez.car.Map.MapTrace;
+import cn.krisez.car.Map.MarkerInfoWindow;
 import cn.krisez.car.base.BasePermissionsActivity;
 import cn.krisez.car.entity.CarRoute;
 import cn.krisez.car.entity.SpeedEvent;
@@ -78,6 +79,8 @@ public class MainActivity extends BasePermissionsActivity
         myTrafficStyle.setSmoothColor(Color.parseColor("#5c71fc71"));
         aMap.setMyTrafficStyle(myTrafficStyle);
         aMap.setTrafficEnabled(true);
+
+        aMap.setInfoWindowAdapter(new MarkerInfoWindow(this));
 
         aMap.setOnMarkerClickListener(new AMap.OnMarkerClickListener() {
             @Override
