@@ -169,23 +169,47 @@ public class MapTrace {
 
     public static class SpeedInterpolator implements TimeInterpolator {
         private List<CarRoute> mSpeedList;
-        private double s = 0;
         private double totalDistance = 0;
         private float t;
-        private float multiples;
 
         int index;
-        float v = 0;
+        private float temp[];
+
+        private double[] a;
+        private double pretentDistance;
+        private double[] s;
 
         SpeedInterpolator(List<CarRoute> speedList, float duration) {
             mSpeedList = speedList;
             t = duration / 1000 / (speedList.size() - 1);
-            multiples = duration / 20000;
-            t = t / multiples;
+            a = new double[speedList.size() - 1];
+            //真实距离
             for (int i = 0; i < speedList.size() - 1; ++i) {
                 double k = (double) AMapUtils.calculateLineDistance(speedList.get(i).getLatLng(), speedList.get(i + 1).getLatLng());
                 this.totalDistance += k;
             }
+            //加速度
+            for (int i = 0; i < speedList.size() - 1; i++) {
+                a[i] = (speedList.get(i + 1).getSpeed() - speedList.get(i).getSpeed()) / t;
+            }
+
+            //中间段的时间
+            float tp = 1f / (speedList.size() - 1);
+            temp = new float[speedList.size()-1];
+            temp[0] = 0;
+            for (int i = 1; i < temp.length; i++) {
+                temp[i] = temp[i-1] + tp;
+            }
+
+            //模拟距离
+            s = new double[mSpeedList.size() - 1];
+            for (int i = 0; i < mSpeedList.size() - 1; i++) {
+                float start = (float) (mSpeedList.get(i).getSpeed() / 3.6f);
+                s[i] = start * t + a[i] * t * t / 2;
+                Log.d("SpeedInterpolator", "calculator:" + "每一段" + s[i]);
+                pretentDistance += s[i];
+            }
+            Log.d("SpeedInterpolator", "calculator:总的" + pretentDistance);
         }
 
         /**
@@ -195,22 +219,31 @@ public class MapTrace {
          *              单位km/h 换算 m/s
          * @return 可反映速度快慢的返回值
          */
+
         @Override
         public float getInterpolation(float input) {
             index = (int) (input * (mSpeedList.size() - 1));
             if (index == mSpeedList.size() - 1) {
                 return 1;
             }
+            double ss = 0;
+            for (int i = 0; i < index; i++) {
+                ss += s[i];
+            }
             float start = (float) (mSpeedList.get(index).getSpeed() / 3600 * 1000);
-            float end = (float) (mSpeedList.get(index + 1).getSpeed() / 3600 * 1000);
-            double a = (end - start) / t;//加速度
-            double time = input % t;//当前经历的时间
-            s += v * time + a * time * time / 2;
-            v = (float) (start + a * time);//当前速度
-            EventBus.getDefault().post(new SpeedEvent(v * 3.6f));
-            Log.d("SpeedInterpolator", "getInterpolation:" + s);
+            //double time = input % t;//当前经历的时间
+            //s += v * time + a * time * time / 2;
+
+            //t  duration/size-1    c 1/size-1
+            double c = input - temp[index];
+            c *= 10;
+            double current = start * c + a[index] * c * c / 2;
+            float v = (float) (start + a[index] * c);//当前速度
+            ss += current;
+            EventBus.getDefault().post(new SpeedEvent((v * 3.6f)));
+            Log.d("SpeedInterpolator", "getInterpolation:" + ss);
             //实际距离，真实距离    totalDistance
-            return (float) (s / (2440.377955942903 * multiples));
+            return (float) (ss / pretentDistance);
         }
     }
 }

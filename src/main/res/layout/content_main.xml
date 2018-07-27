@@ -25,7 +25,17 @@
         tools:text="当前时速：20km"
         />
 
+    <SeekBar
+        android:id="@+id/pb_fraction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:max="100"
+        app:layout_constraintBottom_toTopOf="@id/bottom"/>
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent">

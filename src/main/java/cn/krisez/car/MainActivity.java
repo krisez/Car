@@ -15,6 +15,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -127,14 +129,16 @@ public class MainActivity extends BasePermissionsActivity
     ValueAnimator animator;
 
     public void startAnimation(View view) {
+        final SeekBar progressBar = findViewById(R.id.pb_fraction);
         if(tvShowSpeed.getVisibility()==View.GONE){
             tvShowSpeed.setVisibility(View.VISIBLE);
         }
-        animator = (ValueAnimator) controller.getMarkerAnimator(10000);
+        animator = (ValueAnimator) controller.getMarkerAnimator(46000);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                CarRoute carRoute = (CarRoute) animation.getAnimatedValue();
+                marker.showInfoWindow();
+                progressBar.setProgress((int) (animation.getAnimatedFraction()*100));
                 if(animation.getAnimatedFraction()==1){
                     tvShowSpeed.setVisibility(View.GONE);
                 }
