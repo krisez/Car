@@ -178,11 +178,13 @@ public class MapTrace {
         private double[] a;
         private double pretentDistance;
         private double[] s;
+        private double mMultiple;
 
         SpeedInterpolator(List<CarRoute> speedList, float duration) {
             mSpeedList = speedList;
             t = duration / 1000 / (speedList.size() - 1);
             a = new double[speedList.size() - 1];
+            mMultiple = duration / 1000 ;
             //真实距离
             for (int i = 0; i < speedList.size() - 1; ++i) {
                 double k = (double) AMapUtils.calculateLineDistance(speedList.get(i).getLatLng(), speedList.get(i + 1).getLatLng());
@@ -236,7 +238,7 @@ public class MapTrace {
 
             //t  duration/size-1    c 1/size-1
             double c = input - temp[index];
-            c *= 10;
+            c *= mMultiple;
             double current = start * c + a[index] * c * c / 2;
             float v = (float) (start + a[index] * c);//当前速度
             ss += current;
