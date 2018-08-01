@@ -3,7 +3,6 @@ package cn.krisez.car;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -12,10 +11,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +24,6 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyTrafficStyle;
-import com.squareup.haha.perflib.Main;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -37,12 +33,10 @@ import java.util.List;
 import java.util.Locale;
 
 import cn.krisez.car.Map.MapController;
-import cn.krisez.car.Map.MapMarker;
-import cn.krisez.car.Map.MapTrace;
 import cn.krisez.car.Map.MarkerInfoWindow;
 import cn.krisez.car.base.BasePermissionsActivity;
-import cn.krisez.car.entity.CarRoute;
 import cn.krisez.car.entity.SpeedEvent;
+import cn.krisez.car.video.VideoDetailActivity;
 
 public class MainActivity extends BasePermissionsActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -192,7 +186,7 @@ public class MainActivity extends BasePermissionsActivity
         if (id == R.id.nav_camera) {
             startActivity(new Intent(MainActivity.this, PeopleActivity.class));
         } else if (id == R.id.nav_gallery) {
-            startActivity(new Intent(MainActivity.this,ScrollingActivity.class));
+            startActivity(new Intent(MainActivity.this,VideoDetailActivity.class));
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {

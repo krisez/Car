@@ -1,54 +1,75 @@
-package cn.krisez.car;
+package cn.krisez.car.video;
 
+import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder;
 import com.shuyu.gsyvideoplayer.listener.GSYSampleCallBack;
-import com.shuyu.gsyvideoplayer.listener.GSYVideoProgressListener;
-import com.shuyu.gsyvideoplayer.listener.LockClickListener;
+import com.shuyu.gsyvideoplayer.utils.CommonUtil;
 import com.shuyu.gsyvideoplayer.utils.Debuger;
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
-import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 
+import cn.krisez.car.R;
 import cn.krisez.car.utils.DensityUtil;
 
-public class ScrollingActivity extends AppCompatActivity {
+public class VideoDetailActivity extends AppCompatActivity {
     private boolean isPlay;
     private boolean isPause;
     private boolean isSamll;
-    private boolean isLinkScroll = false;
 
-    private StandardGSYVideoPlayer detailPlayer;
+    private LandLayoutVideo detailPlayer;
     private OrientationUtils orientationUtils;
 
+    private Toolbar toolbar;
+    private AppBarLayout appBar;
+    private CollapsingToolbarLayout toolbarLayout;
 
+    private AppBarStateChangeListener.State curState;
+
+
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrolling);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        appBar = findViewById(R.id.app_bar);
+
+        toolbarLayout = findViewById(R.id.toolbar_layout);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+        toolbar.setTitle("");
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
+
+        toolbarLayout.setTitle(" ");
+
+        appBar.addOnOffsetChangedListener(appBarStateChangeListener);
 
         String url = "http://krisez.cn/video/gratewall.mp4";
 
-        detailPlayer = findViewById(R.id.video_scroll);
+        detailPlayer = findViewById(R.id.detail_player);
 
         //增加封面
         ImageView imageView = new ImageView(this);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        Bitmap bitmap = DensityUtil.readBitMap(this,R.drawable.cq);
+        Bitmap bitmap = DensityUtil.readBitMap(this, R.drawable.cq);
         imageView.setImageBitmap(bitmap);
+
+        //增加title
+        detailPlayer.getTitleTextView().setVisibility(View.GONE);
+        detailPlayer.getBackButton().setVisibility(View.GONE);
 
         //外部辅助的旋转，帮助全屏
         orientationUtils = new OrientationUtils(this, detailPlayer);
@@ -65,7 +86,7 @@ public class ScrollingActivity extends AppCompatActivity {
                 .setSeekRatio(1)
                 .setUrl(url)
                 .setCacheWithPlay(false)
-                .setVideoTitle("测试视频")
+                .setVideoTitle("长城")
                 .setVideoAllCallBack(new GSYSampleCallBack() {
 
                     @Override
@@ -105,34 +126,23 @@ public class ScrollingActivity extends AppCompatActivity {
                         }
                     }
                 })
-                .setLockClickListener(new LockClickListener() {
-                    @Override
-                    public void onClick(View view, boolean lock) {
-                        if (orientationUtils != null) {
-                            //配合下方的onConfigurationChanged
-                            orientationUtils.setEnable(!lock);
-                        }
+                .setLockClickListener((view, lock) -> {
+                    if (orientationUtils != null) {
+                        //配合下方的onConfigurationChanged
+                        orientationUtils.setEnable(!lock);
                     }
                 })
-                .setGSYVideoProgressListener(new GSYVideoProgressListener() {
-                    @Override
-                    public void onProgress(int progress, int secProgress, int currentPosition, int duration) {
-                        Debuger.printfLog(" progress " + progress + " secProgress " + secProgress + " currentPosition " + currentPosition + " duration " + duration);
-                    }
-                })
+                .setGSYVideoProgressListener((progress, secProgress, currentPosition, duration) -> Debuger.printfLog(" progress " + progress + " secProgress " + secProgress + " currentPosition " + currentPosition + " duration " + duration))
                 .build(detailPlayer);
 
-        detailPlayer.getFullscreenButton().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //直接横屏
-                orientationUtils.resolveByClick();
+        detailPlayer.getFullscreenButton().setOnClickListener(v -> {
+            //直接横屏
+            orientationUtils.resolveByClick();
 
-                //第一个true是否需要隐藏actionbar，第二个true是否需要隐藏statusbar
-                detailPlayer.startWindowFullscreen(ScrollingActivity.this, true, true);
-            }
+            //第一个true是否需要隐藏actionbar，第二个true是否需要隐藏statusbar
+            detailPlayer.startWindowFullscreen(VideoDetailActivity.this, true, true);
         });
-
+        detailPlayer.setLinkScroll(true);
     }
 
 
@@ -160,7 +170,7 @@ public class ScrollingActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         getCurPlay().onVideoResume();
-        //appBar.addOnOffsetChangedListener(appBarStateChangeListener);
+        appBar.addOnOffsetChangedListener(appBarStateChangeListener);
         super.onResume();
         isPause = false;
     }
@@ -192,4 +202,44 @@ public class ScrollingActivity extends AppCompatActivity {
         return detailPlayer;
     }
 
+    AppBarStateChangeListener appBarStateChangeListener = new AppBarStateChangeListener() {
+        @Override
+        public void onStateChanged(AppBarLayout appBarLayout, AppBarStateChangeListener.State
+                state) {
+            if (state == AppBarStateChangeListener.State.EXPANDED) {
+                //展开状态
+                curState = state;
+                toolbarLayout.setTitle("");
+            } else if (state == AppBarStateChangeListener.State.COLLAPSED) {
+                //折叠状态
+                //如果是小窗口就不需要处理
+                toolbarLayout.setTitle("长城");
+                if (!isSamll && isPlay) {
+                    isSamll = true;
+                    int size = CommonUtil.dip2px(VideoDetailActivity.this, 150);
+                    detailPlayer.showSmallVideo(new Point(size, size), true, true);
+                    orientationUtils.setEnable(false);
+                }
+                curState = state;
+            } else {
+                if (curState == AppBarStateChangeListener.State.COLLAPSED) {
+                    //由折叠变为中间状态
+                    toolbarLayout.setTitle("");
+                    if (isSamll) {
+                        isSamll = false;
+                        orientationUtils.setEnable(true);
+                        //必须
+                        detailPlayer.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                detailPlayer.hideSmallVideo();
+                            }
+                        }, 50);
+                    }
+                }
+                curState = state;
+                //中间状态
+            }
+        }
+    };
 }
