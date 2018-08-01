@@ -8,9 +8,9 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.request.RequestOptions;
+
+import cn.krisez.car.App;
 
 public class ImgManager {
     private static ImgManager sManager;
@@ -19,7 +19,6 @@ public class ImgManager {
     private Activity mActivity;
     private Fragment mFragment;
     private View mView;
-    private RequestBuilder<Drawable> mRequestBuilder;
 
     private ImgManager() {
     }
@@ -55,7 +54,7 @@ public class ImgManager {
 
     public ImgManager bind(View view) {
         this.mView = view;
-        mRequestManager = Glide.with(view);
+        mRequestManager = Glide.with(App.getContext());
         return this;
     }
 
@@ -65,15 +64,6 @@ public class ImgManager {
         return this;
     }
 
-    public ImgManager load(String url) {
-        mRequestBuilder = mRequestManager.load(url);
-        return this;
-    }
-
-    public void into(ImageView img) {
-        mRequestBuilder.into(img);
-        destroy();
-    }
 
     private void destroy() {
         mRequestManager = null;
@@ -81,7 +71,6 @@ public class ImgManager {
         mActivity = null;
         mFragment = null;
         mView = null;
-        mRequestBuilder = null;
     }
 
 }

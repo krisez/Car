@@ -27,6 +27,7 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyTrafficStyle;
+import com.squareup.haha.perflib.Main;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.Locale;
 
 import cn.krisez.car.Map.MapController;
+import cn.krisez.car.Map.MapMarker;
 import cn.krisez.car.Map.MapTrace;
 import cn.krisez.car.Map.MarkerInfoWindow;
 import cn.krisez.car.base.BasePermissionsActivity;
@@ -190,7 +192,7 @@ public class MainActivity extends BasePermissionsActivity
         if (id == R.id.nav_camera) {
             startActivity(new Intent(MainActivity.this, PeopleActivity.class));
         } else if (id == R.id.nav_gallery) {
-
+            startActivity(new Intent(MainActivity.this,ScrollingActivity.class));
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
