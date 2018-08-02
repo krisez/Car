@@ -1,4 +1,4 @@
-package cn.krisez.car.Map;
+package cn.krisez.car.map;
 
 import android.content.Context;
 import android.view.View;

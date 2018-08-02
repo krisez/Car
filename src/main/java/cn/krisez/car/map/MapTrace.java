@@ -1,4 +1,4 @@
-package cn.krisez.car.Map;
+package cn.krisez.car.map;
 
 import android.animation.Animator;
 import android.animation.TimeInterpolator;
@@ -111,6 +111,7 @@ public class MapTrace {
 //        Log.d("MapTrace", "addPolylineInPlayGround:" + bounds.northeast);
 //        Log.d("MapTrace", "addPolylineInPlayGround:" + bounds.southwest);
         mAMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 0));
+        mAMap.animateCamera(CameraUpdateFactory.zoomBy(-0.5f));
     }
 
     /**

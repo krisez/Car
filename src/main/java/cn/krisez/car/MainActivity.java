@@ -32,8 +32,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 import java.util.Locale;
 
-import cn.krisez.car.Map.MapController;
-import cn.krisez.car.Map.MarkerInfoWindow;
+import cn.krisez.car.map.MapController;
+import cn.krisez.car.map.MarkerInfoWindow;
 import cn.krisez.car.base.BasePermissionsActivity;
 import cn.krisez.car.entity.SpeedEvent;
 import cn.krisez.car.video.VideoDetailActivity;
@@ -78,12 +78,13 @@ public class MainActivity extends BasePermissionsActivity
 
         aMap.setInfoWindowAdapter(new MarkerInfoWindow(this));
 
-        aMap.setOnMarkerClickListener(new AMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                Toast.makeText(MainActivity.this, "点击Marker", Toast.LENGTH_SHORT).show();
-                return true;
-            }
+        aMap.setOnMarkerClickListener(marker -> {
+            Toast.makeText(MainActivity.this, "点击Marker", Toast.LENGTH_SHORT).show();
+            return true;
+        });
+
+        aMap.setOnInfoWindowClickListener(marker -> {
+            startActivity(new Intent(MainActivity.this,VideoDetailActivity.class));
         });
     }
 
@@ -128,19 +129,16 @@ public class MainActivity extends BasePermissionsActivity
     ValueAnimator animator;
 
     public void startAnimation(View view) {
+        marker.showInfoWindow();
         final SeekBar progressBar = findViewById(R.id.pb_fraction);
         if(tvShowSpeed.getVisibility()==View.GONE){
             tvShowSpeed.setVisibility(View.VISIBLE);
         }
         animator = (ValueAnimator) controller.getMarkerAnimator(46000);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                marker.showInfoWindow();
-                progressBar.setProgress((int) (animation.getAnimatedFraction()*100));
-                if(animation.getAnimatedFraction()==1){
-                    tvShowSpeed.setVisibility(View.GONE);
-                }
+        animator.addUpdateListener(animation -> {
+            progressBar.setProgress((int) (animation.getAnimatedFraction()*100));
+            if(animation.getAnimatedFraction()==1){
+                tvShowSpeed.setVisibility(View.GONE);
             }
         });
     }
@@ -158,6 +156,9 @@ public class MainActivity extends BasePermissionsActivity
 
     public void clear(View view) {
         controller = controller.clearTrace();
+        if(animator.isStarted()){
+            animator.end();
+        }
         marker.remove();
     }
 
@@ -183,23 +184,18 @@ public class MainActivity extends BasePermissionsActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_people_center) {
             startActivity(new Intent(MainActivity.this, PeopleActivity.class));
-        } else if (id == R.id.nav_gallery) {
-            startActivity(new Intent(MainActivity.this,VideoDetailActivity.class));
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_trace_history) {
+        } else if (id == R.id.nav_video_history) {
 
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_setting) {
 
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        return true;
+        return false;
     }
 
 
@@ -225,6 +221,11 @@ public class MainActivity extends BasePermissionsActivity
     protected void onDestroy() {
         super.onDestroy();
         controller.onDestroy();
+        if(animator.isStarted()){
+            animator.end();
+            animator.removeAllUpdateListeners();
+        }
+        EventBus.getDefault().unregister(this);
     }
 
 }

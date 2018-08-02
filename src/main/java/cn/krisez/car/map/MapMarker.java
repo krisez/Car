@@ -1,4 +1,4 @@
-package cn.krisez.car.Map;
+package cn.krisez.car.map;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;

@@ -11,6 +11,10 @@
     <string name="notifyMsg">当前应用缺少必要权限。\n\n请点击\"设置\"-\"权限\"-打开所需权限。</string>
     <string name="setting">设置</string>
     <string name="cancel">取消</string>
+    <string name="people_center">用户中心</string>
+    <string name="trace_history">历史轨迹</string>
+    <string name="video_history">历史记录</string>
+    <string name="about">关于</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 

@@ -1,21 +1,13 @@
-package cn.krisez.car.Map;
+package cn.krisez.car.map;
 
 import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Color;
-import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 
-import com.amap.api.location.AMapLocation;
-import com.amap.api.location.AMapLocationClient;
-import com.amap.api.location.AMapLocationClientOption;
-import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.AMap;
-import com.amap.api.maps.AMapOptions;
 import com.amap.api.maps.CameraUpdateFactory;
-import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.TextureMapView;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
@@ -24,7 +16,6 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
-import com.amap.api.maps.model.Polyline;
 
 import java.util.List;
 
@@ -36,7 +27,6 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
     private MapView mMapView;
     private TextureMapView mTextureMapView;
     private AMap mMap;
-    private AMapLocationClient aMapLocationClient;
     private MyLocationStyle myLocationStyle;
 
     public MapController(Context context) {
@@ -121,8 +111,9 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
         return this;
     }
 
+    Animator mAnimator;
     public Animator getMarkerAnimator(float duration){
-        return mMapTrace.setAnimation(mMarker,duration);
+        return mAnimator = mMapTrace.setAnimation(mMarker,duration);
     }
 
     public List<LatLng> getTracePoints(){
@@ -144,16 +135,6 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
         }
     }
 
-    public void onPause() {
-        if (mMapView != null) {
-            mMapView.onPause();
-        } else {
-            if (mTextureMapView != null) {
-                mTextureMapView.onPause();
-            }
-        }
-    }
-
     public void onResume() {
         if (mMapView != null) {
             mMapView.onResume();
@@ -162,12 +143,27 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
                 mTextureMapView.onResume();
             }
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && mAnimator!=null) {
+            if(mAnimator.isStarted()&&mAnimator.isPaused())
+                mAnimator.resume();
+        }
+    }
+
+    public void onPause() {
+        if (mMapView != null) {
+            mMapView.onPause();
+        } else {
+            if (mTextureMapView != null) {
+                mTextureMapView.onPause();
+            }
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && mAnimator!=null) {
+            if(mAnimator.isStarted()&&mAnimator.isRunning())
+            mAnimator.pause();
+        }
     }
 
     public void onDestroy() {
-        if (mContext != null) {
-            mContext = null;
-        }
         if (mMapView != null) {
             mMapView.onDestroy();
         } else {
@@ -175,10 +171,11 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
                 mTextureMapView.onDestroy();
             }
         }
-        if (aMapLocationClient != null) {
-            aMapLocationClient.onDestroy();
-            aMapLocationClient = null;
+        if (mContext != null) {
+            mContext = null;
         }
+        if(mAnimator!=null&&mAnimator.isStarted())
+        mAnimator.end();
     }
 
     public void create(Bundle savedInstanceState) {

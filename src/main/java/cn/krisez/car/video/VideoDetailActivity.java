@@ -28,10 +28,9 @@ public class VideoDetailActivity extends AppCompatActivity {
     private boolean isPause;
     private boolean isSamll;
 
-    private LandLayoutVideo detailPlayer;
-    private OrientationUtils orientationUtils;
+    private LandLayoutVideo mLandLayoutVideo;
+    private OrientationUtils mOrientationUtils;
 
-    private Toolbar toolbar;
     private AppBarLayout appBar;
     private CollapsingToolbarLayout toolbarLayout;
 
@@ -42,24 +41,21 @@ public class VideoDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scrolling);
+        setContentView(R.layout.activity_video_detail);
 
         appBar = findViewById(R.id.app_bar);
 
         toolbarLayout = findViewById(R.id.toolbar_layout);
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
-        toolbar.setTitle("");
+        toolbar.setNavigationIcon(R.drawable.ic_back);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
-
-        toolbarLayout.setTitle(" ");
 
         appBar.addOnOffsetChangedListener(appBarStateChangeListener);
 
         String url = "http://krisez.cn/video/gratewall.mp4";
 
-        detailPlayer = findViewById(R.id.detail_player);
+        mLandLayoutVideo = findViewById(R.id.detail_player);
 
         //增加封面
         ImageView imageView = new ImageView(this);
@@ -68,13 +64,13 @@ public class VideoDetailActivity extends AppCompatActivity {
         imageView.setImageBitmap(bitmap);
 
         //增加title
-        detailPlayer.getTitleTextView().setVisibility(View.GONE);
-        detailPlayer.getBackButton().setVisibility(View.GONE);
+        mLandLayoutVideo.getTitleTextView().setVisibility(View.GONE);
+        mLandLayoutVideo.getBackButton().setVisibility(View.GONE);
 
         //外部辅助的旋转，帮助全屏
-        orientationUtils = new OrientationUtils(this, detailPlayer);
+        mOrientationUtils = new OrientationUtils(this, mLandLayoutVideo);
         //初始化不打开外部的旋转
-        orientationUtils.setEnable(false);
+        mOrientationUtils.setEnable(false);
 
         GSYVideoOptionBuilder gsyVideoOption = new GSYVideoOptionBuilder();
         gsyVideoOption.setThumbImageView(imageView)
@@ -95,7 +91,7 @@ public class VideoDetailActivity extends AppCompatActivity {
                         Debuger.printfError("***** onPrepared **** " + objects[1]);
                         super.onPrepared(url, objects);
                         //开始播放了才能旋转和全屏
-                        orientationUtils.setEnable(true);
+                        mOrientationUtils.setEnable(true);
                         isPlay = true;
                     }
 
@@ -121,36 +117,36 @@ public class VideoDetailActivity extends AppCompatActivity {
                         super.onQuitFullscreen(url, objects);
                         Debuger.printfError("***** onQuitFullscreen **** " + objects[0]);//title
                         Debuger.printfError("***** onQuitFullscreen **** " + objects[1]);//当前非全屏player
-                        if (orientationUtils != null) {
-                            orientationUtils.backToProtVideo();
+                        if (mOrientationUtils != null) {
+                            mOrientationUtils.backToProtVideo();
                         }
                     }
                 })
                 .setLockClickListener((view, lock) -> {
-                    if (orientationUtils != null) {
+                    if (mOrientationUtils != null) {
                         //配合下方的onConfigurationChanged
-                        orientationUtils.setEnable(!lock);
+                        mOrientationUtils.setEnable(!lock);
                     }
                 })
                 .setGSYVideoProgressListener((progress, secProgress, currentPosition, duration) -> Debuger.printfLog(" progress " + progress + " secProgress " + secProgress + " currentPosition " + currentPosition + " duration " + duration))
-                .build(detailPlayer);
+                .build(mLandLayoutVideo);
 
-        detailPlayer.getFullscreenButton().setOnClickListener(v -> {
+        mLandLayoutVideo.getFullscreenButton().setOnClickListener(v -> {
             //直接横屏
-            orientationUtils.resolveByClick();
+            mOrientationUtils.resolveByClick();
 
             //第一个true是否需要隐藏actionbar，第二个true是否需要隐藏statusbar
-            detailPlayer.startWindowFullscreen(VideoDetailActivity.this, true, true);
+            mLandLayoutVideo.startWindowFullscreen(VideoDetailActivity.this, true, true);
         });
-        detailPlayer.setLinkScroll(true);
+        mLandLayoutVideo.setLinkScroll(true);
     }
 
 
     @Override
     public void onBackPressed() {
 
-        if (orientationUtils != null) {
-            orientationUtils.backToProtVideo();
+        if (mOrientationUtils != null) {
+            mOrientationUtils.backToProtVideo();
         }
 
         if (GSYVideoManager.backFromWindowFull(this)) {
@@ -159,6 +155,14 @@ public class VideoDetailActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getCurPlay().onVideoResume();
+        appBar.addOnOffsetChangedListener(appBarStateChangeListener);
+        mLandLayoutVideo.setReleaseWhenLossAudio(true);
+        isPause = false;
+    }
 
     @Override
     protected void onPause() {
@@ -168,21 +172,14 @@ public class VideoDetailActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        getCurPlay().onVideoResume();
-        appBar.addOnOffsetChangedListener(appBarStateChangeListener);
-        super.onResume();
-        isPause = false;
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (isPlay) {
             getCurPlay().release();
         }
-        if (orientationUtils != null)
-            orientationUtils.releaseListener();
+        if (mOrientationUtils != null)
+            mOrientationUtils.releaseListener();
+        GSYVideoManager.releaseAllVideos();
     }
 
 
@@ -191,15 +188,15 @@ public class VideoDetailActivity extends AppCompatActivity {
         super.onConfigurationChanged(newConfig);
         //如果旋转了就全屏
         if (isPlay && !isPause) {
-            detailPlayer.onConfigurationChanged(this, newConfig, orientationUtils, true, true);
+            mLandLayoutVideo.onConfigurationChanged(this, newConfig, mOrientationUtils, true, true);
         }
     }
 
     private GSYVideoPlayer getCurPlay() {
-        if (detailPlayer.getFullWindowPlayer() != null) {
-            return detailPlayer.getFullWindowPlayer();
+        if (mLandLayoutVideo.getFullWindowPlayer() != null) {
+            return mLandLayoutVideo.getFullWindowPlayer();
         }
-        return detailPlayer;
+        return mLandLayoutVideo;
     }
 
     AppBarStateChangeListener appBarStateChangeListener = new AppBarStateChangeListener() {
@@ -217,8 +214,8 @@ public class VideoDetailActivity extends AppCompatActivity {
                 if (!isSamll && isPlay) {
                     isSamll = true;
                     int size = CommonUtil.dip2px(VideoDetailActivity.this, 150);
-                    detailPlayer.showSmallVideo(new Point(size, size), true, true);
-                    orientationUtils.setEnable(false);
+                    mLandLayoutVideo.showSmallVideo(new Point(size, size), true, true);
+                    mOrientationUtils.setEnable(false);
                 }
                 curState = state;
             } else {
@@ -227,12 +224,12 @@ public class VideoDetailActivity extends AppCompatActivity {
                     toolbarLayout.setTitle("");
                     if (isSamll) {
                         isSamll = false;
-                        orientationUtils.setEnable(true);
+                        mOrientationUtils.setEnable(true);
                         //必须
-                        detailPlayer.postDelayed(new Runnable() {
+                        mLandLayoutVideo.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                detailPlayer.hideSmallVideo();
+                                mLandLayoutVideo.hideSmallVideo();
                             }
                         }, 50);
                     }
