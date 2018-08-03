@@ -5,7 +5,6 @@ import android.animation.TimeInterpolator;
 import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
 import android.graphics.Color;
-import android.util.Log;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapUtils;
@@ -18,31 +17,31 @@ import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.Polyline;
 import com.amap.api.maps.model.PolylineOptions;
-
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import cn.krisez.car.Network.MySubscribe;
 import cn.krisez.car.Network.NetUtil;
 import cn.krisez.car.R;
 import cn.krisez.car.entity.CarRoute;
-import cn.krisez.car.entity.SpeedEvent;
+import cn.krisez.car.ui.IMainView;
 
 public class MapTrace {
     private Polyline mPolyline;
     private List<CarRoute> mList;
 
     private AMap mAMap;
+    private IMainView mIMainView;
 
-    MapTrace(MapView mapView) {
+    MapTrace(MapView mapView, IMainView view) {
         this.mAMap = mapView.getMap();
         mList = new ArrayList<>();
+        this.mIMainView = view;
     }
 
-    public void startTrace(int id) {
+    public void startTrace(String id) {
         NetUtil.INSTANCE().create(new MySubscribe<List<CarRoute>>() {
             @Override
             public void onNext(List<CarRoute> carRoutes) {
@@ -54,6 +53,11 @@ public class MapTrace {
                 addPolylineInPlayGround(mList);
             }
 
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                mIMainView.error(e.getMessage());
+            }
         }, id, true);
     }
 
@@ -111,7 +115,7 @@ public class MapTrace {
 //        Log.d("MapTrace", "addPolylineInPlayGround:" + bounds.northeast);
 //        Log.d("MapTrace", "addPolylineInPlayGround:" + bounds.southwest);
         mAMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 0));
-        mAMap.animateCamera(CameraUpdateFactory.zoomBy(-0.5f));
+        mIMainView.traceOver();
     }
 
     /**
@@ -123,25 +127,18 @@ public class MapTrace {
         for (int i = 0; i < objects.length; i++) {
             objects[i] = mList.get(i);
         }
-        animator = ValueAnimator.ofObject(new TypeEvaluator<CarRoute>() {
-            @Override
-            public CarRoute evaluate(float fraction, CarRoute startValue, CarRoute endValue) {
-                double lat = startValue.getLat() + fraction * (endValue.getLat() - startValue.getLat());
-                double lon = startValue.getLon() + fraction * (endValue.getLon() - startValue.getLon());
-                double speed = startValue.getSpeed() + fraction * (endValue.getSpeed() - startValue.getSpeed());
-                return new CarRoute(lon, lat, speed, getAngle(startValue.getLatLng(), endValue.getLatLng()));
-            }
-
+        animator = ValueAnimator.ofObject((TypeEvaluator<CarRoute>) (fraction, startValue, endValue) -> {
+            double lat = startValue.getLat() + fraction * (endValue.getLat() - startValue.getLat());
+            double lon = startValue.getLon() + fraction * (endValue.getLon() - startValue.getLon());
+            double speed = startValue.getSpeed() + fraction * (endValue.getSpeed() - startValue.getSpeed());
+            return new CarRoute(lon, lat, speed, getAngle(startValue.getLatLng(), endValue.getLatLng()));
         }, objects);
 
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                CarRoute carRoute = (CarRoute) animation.getAnimatedValue();
-                marker.setMarkerOptions(marker.getOptions().position(carRoute.getLatLng()).rotateAngle((float) carRoute.getBearing()));
-                //默认无
-                //mAMap.moveCamera(CameraUpdateFactory.changeLatLng(carRoute.getLatLng()));
-            }
+        animator.addUpdateListener(animation -> {
+            CarRoute carRoute = (CarRoute) animation.getAnimatedValue();
+            marker.setMarkerOptions(marker.getOptions().position(carRoute.getLatLng()).rotateAngle((float) carRoute.getBearing()));
+            //默认无
+            //  mAMap.moveCamera(CameraUpdateFactory.changeLatLng(carRoute.getLatLng()));
         });
         animator.setInterpolator(new SpeedInterpolator(mList, duration));
         animator.setDuration((long) duration);
@@ -168,7 +165,7 @@ public class MapTrace {
         return angle;
     }
 
-    public static class SpeedInterpolator implements TimeInterpolator {
+    class SpeedInterpolator implements TimeInterpolator {
         private List<CarRoute> mSpeedList;
         private double totalDistance = 0;
         private float t;
@@ -209,10 +206,8 @@ public class MapTrace {
             for (int i = 0; i < mSpeedList.size() - 1; i++) {
                 float start = (float) (mSpeedList.get(i).getSpeed() / 3.6f);
                 s[i] = start * t + a[i] * t * t / 2;
-                Log.d("SpeedInterpolator", "calculator:" + "每一段" + s[i]);
                 pretentDistance += s[i];
             }
-            Log.d("SpeedInterpolator", "calculator:总的" + pretentDistance);
         }
 
         /**
@@ -243,8 +238,9 @@ public class MapTrace {
             double current = start * c + a[index] * c * c / 2;
             float v = (float) (start + a[index] * c);//当前速度
             ss += current;
-            EventBus.getDefault().post(new SpeedEvent((v * 3.6f)));
-            Log.d("SpeedInterpolator", "getInterpolation:" + ss);
+            //EventBus.getDefault().post(new SpeedEvent((v * 3.6f)));
+            String speed = String.format(Locale.CHINA, "%.2f", (v * 3.6f));
+            mIMainView.speed(speed);
             //实际距离，真实距离    totalDistance
             return (float) (ss / pretentDistance);
         }

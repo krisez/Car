@@ -19,7 +19,9 @@ import com.amap.api.maps.model.MyLocationStyle;
 
 import java.util.List;
 
+import cn.krisez.car.MainActivity;
 import cn.krisez.car.R;
+import cn.krisez.car.ui.IMainView;
 
 public class MapController /*implements AMapLocationListener, LocationSource*/{
     private Context mContext;
@@ -28,6 +30,7 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
     private TextureMapView mTextureMapView;
     private AMap mMap;
     private MyLocationStyle myLocationStyle;
+    private IMainView mView;
 
     public MapController(Context context) {
         this.mContext = context;
@@ -47,6 +50,11 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
     public MapController map(TextureMapView mapView) {
         this.mTextureMapView = mapView;
         this.mMap = mapView.getMap();
+        return this;
+    }
+
+    public MapController view(IMainView view) {
+        this.mView = view;
         return this;
     }
 
@@ -105,8 +113,8 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
      */
 
     private MapTrace mMapTrace;
-    public MapController setTrace(int id){
-        mMapTrace = new MapTrace(mMapView);
+    public MapController setTrace(String id){
+        mMapTrace = new MapTrace(mMapView,mView);
         mMapTrace.startTrace(id);
         return this;
     }
@@ -187,6 +195,4 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
             }
         }
     }
-
-
 }

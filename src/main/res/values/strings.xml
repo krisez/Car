@@ -15,6 +15,7 @@
     <string name="trace_history">历史轨迹</string>
     <string name="video_history">历史记录</string>
     <string name="about">关于</string>
+    <string name="distance">距离</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
@@ -104,4 +105,6 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="trace_start_animator">轨 迹 播 放</string>
+    <string name="video_looking">视 频 记 录</string>
 </resources>

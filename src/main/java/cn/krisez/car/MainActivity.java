@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,6 +14,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,17 +34,23 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 import java.util.Locale;
 
+import cn.krisez.car.adapter.TraceHistoryAdapter;
+import cn.krisez.car.enevt.TraceEvent;
 import cn.krisez.car.map.MapController;
 import cn.krisez.car.map.MarkerInfoWindow;
 import cn.krisez.car.base.BasePermissionsActivity;
-import cn.krisez.car.entity.SpeedEvent;
+import cn.krisez.car.enevt.SpeedEvent;
+import cn.krisez.car.ui.IMainView;
+import cn.krisez.car.ui.TraceHistoryActivity;
 import cn.krisez.car.video.VideoDetailActivity;
 
 public class MainActivity extends BasePermissionsActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, IMainView {
     private MapController controller;
     private MapView mMapView;
     private TextView tvShowSpeed;
+    private ConstraintLayout mBottom;
+    private SeekBar mSeekBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +71,11 @@ public class MainActivity extends BasePermissionsActivity
 
         mMapView = findViewById(R.id.mv_show);
         tvShowSpeed = findViewById(R.id.tv_show_speed);
+        mBottom = findViewById(R.id.bottom);
+        mSeekBar = findViewById(R.id.pb_fraction);
 
         controller = new MapController(this);
-        controller.map(mMapView).defaultAmap().create(savedInstanceState);
+        controller.map(mMapView).view(this).defaultAmap().create(savedInstanceState);
         //可以获得AMap 继续对其另外的操作
         AMap aMap = mMapView.getMap();
         MyTrafficStyle myTrafficStyle = new MyTrafficStyle();
@@ -84,17 +94,13 @@ public class MainActivity extends BasePermissionsActivity
         });
 
         aMap.setOnInfoWindowClickListener(marker -> {
-            startActivity(new Intent(MainActivity.this,VideoDetailActivity.class));
+            startActivity(new Intent(MainActivity.this, VideoDetailActivity.class));
         });
     }
 
     Marker marker;
 
-    public void trace(View view) {
-        controller = controller.setTrace(1);
-    }
-
-    public void setMarker(View view) {
+    public void setMarker() {
         List<LatLng> list = controller.getTracePoints();
         MarkerOptions options = new MarkerOptions();
         LatLng latLng1 = list.get(0);
@@ -127,17 +133,15 @@ public class MainActivity extends BasePermissionsActivity
     }
 
     ValueAnimator animator;
-
     public void startAnimation(View view) {
         marker.showInfoWindow();
-        final SeekBar progressBar = findViewById(R.id.pb_fraction);
-        if(tvShowSpeed.getVisibility()==View.GONE){
+        if (tvShowSpeed.getVisibility() == View.GONE) {
             tvShowSpeed.setVisibility(View.VISIBLE);
         }
         animator = (ValueAnimator) controller.getMarkerAnimator(46000);
         animator.addUpdateListener(animation -> {
-            progressBar.setProgress((int) (animation.getAnimatedFraction()*100));
-            if(animation.getAnimatedFraction()==1){
+            mSeekBar.setProgress((int) (animation.getAnimatedFraction() * 100));
+            if (animation.getAnimatedFraction() == 1) {
                 tvShowSpeed.setVisibility(View.GONE);
             }
         });
@@ -156,16 +160,36 @@ public class MainActivity extends BasePermissionsActivity
 
     public void clear(View view) {
         controller = controller.clearTrace();
-        if(animator.isStarted()){
+        if (animator != null && animator.isStarted()) {
             animator.end();
         }
-        marker.remove();
+        if (marker != null) {
+            marker.remove();
+        }
+        mBottom.setVisibility(View.GONE);
+        mSeekBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void traceOver() {
+        setMarker();
+        mBottom.setVisibility(View.VISIBLE);
+        mSeekBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void speed(String v) {
+        tvShowSpeed.setText("当前时速：" + v + "km");
+    }
+
+    @Override
+    public void error(String s) {
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSpeed(SpeedEvent event) {
-        String speed = String.format(Locale.CHINA,"%.2f", event.getSpeed());
-        tvShowSpeed.setText("当前时速：" + speed + "km");
+    public void onTrace(TraceEvent event) {
+        controller = controller.setTrace(event.getId());
     }
 
     @Override
@@ -187,6 +211,7 @@ public class MainActivity extends BasePermissionsActivity
         if (id == R.id.nav_people_center) {
             startActivity(new Intent(MainActivity.this, PeopleActivity.class));
         } else if (id == R.id.nav_trace_history) {
+            startActivity(new Intent(MainActivity.this, TraceHistoryActivity.class));
         } else if (id == R.id.nav_video_history) {
 
         } else if (id == R.id.nav_setting) {
@@ -221,11 +246,10 @@ public class MainActivity extends BasePermissionsActivity
     protected void onDestroy() {
         super.onDestroy();
         controller.onDestroy();
-        if(animator.isStarted()){
+        if (animator.isStarted()) {
             animator.end();
             animator.removeAllUpdateListeners();
         }
         EventBus.getDefault().unregister(this);
     }
-
 }

@@ -1,4 +1,4 @@
-package cn.krisez.car.entity;
+package cn.krisez.car.enevt;
 
 public class SpeedEvent {
     private float v;

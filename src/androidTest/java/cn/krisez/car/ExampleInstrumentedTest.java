@@ -29,19 +29,4 @@ public class ExampleInstrumentedTest {
 
         assertEquals("cn.krisez.car", appContext.getPackageName());
     }
-    @Test
-    public void add(){
-        NetUtil.INSTANCE().create(new MySubscribe<JsonObject>() {
-
-            @Override
-            public void onNext(JsonObject jsonObject) {
-                System.out.println(jsonObject.toString());
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        },"123","123",true);
-    }
 }

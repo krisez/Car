@@ -55,4 +55,5 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
     implementation files('libs/AMap3DMap_6.3.0_AMapSearch_6.1.0_AMapLocation_4.1.0_20180619.jar')
+    implementation 'com.android.support:cardview-v7:27.0.2'
 }

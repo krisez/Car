@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import cn.krisez.car.entity.CarRoute;
+import cn.krisez.car.entity.TraceQuery;
+import cn.krisez.car.entity.VideoQuery;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -57,7 +59,7 @@ public class NetUtil {
                 .readTimeout(3,TimeUnit.SECONDS).build();
         mRetrofit = new Retrofit.Builder()
                 .client(okHttpClient)
-                .baseUrl("http://krisez.cn/map/")
+                .baseUrl("http://krisez.cn/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
@@ -71,19 +73,19 @@ public class NetUtil {
         addCallAdapter = true;
     }
 
-    public void create(Observer<JsonObject> observer, String u, String p, boolean isMain){
+    public void create(Observer<List<TraceQuery>> observer, String type, String traceId, boolean isMain){
         NetServiceApi api = mRetrofit.create(NetServiceApi.class);
-        createRx(api.getR(u,p),observer,isMain);
+        createRx(api.query(type,traceId),observer,isMain);
     }
 
-    public void create(Observer<List<CarRoute>> observer, int id, boolean isMain){
+    public void create(Observer<List<CarRoute>> observer, String id, boolean isMain){
         NetServiceApi api = mRetrofit.create(NetServiceApi.class);
-        createRx(api.getRoutes(),observer,isMain);
+        createRx(api.getRoutes(id),observer,isMain);
     }
 
-    public void create(Observer<?> observer,String u,String p,boolean isMain,int type){
+   /* public void create(Observer<?> observer, String u, String p, boolean isMain){
        //TODO:其他网络库处理内容
-    }
+    }*/
 
     /**
      * 修改上面的数据内容体就可以更换网络框架

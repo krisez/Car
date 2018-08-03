@@ -29,15 +29,18 @@
         android:id="@+id/pb_fraction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:max="100"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/bottom"/>
     <android.support.constraint.ConstraintLayout
         android:id="@+id/bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent">
         <Button
             android:id="@+id/start"
@@ -45,7 +48,7 @@
             android:layout_height="wrap_content"
             android:text="start"
             android:onClick="startAnimation"
-            app:layout_constraintBottom_toTopOf="@+id/trace"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
@@ -53,15 +56,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="pause"
-            android:onClick="pause"/>
-        <Button
-            android:id="@+id/trace"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="trace"
-            android:text="trace"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:onClick="pause"
+            android:id="@+id/pause"/>
 
         <Button
             android:id="@+id/clear"
@@ -70,15 +66,8 @@
             android:onClick="clear"
             android:text="clear"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/trace" />
+            app:layout_constraintStart_toEndOf="@id/pause"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="setMarker"
-            android:text="animation"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/clear" />
     </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>
