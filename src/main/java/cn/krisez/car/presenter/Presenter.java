@@ -1,23 +1,35 @@
 package cn.krisez.car.presenter;
 
+import android.content.Context;
 import android.content.Intent;
 
-import cn.krisez.car.ui.IView;
+import cn.krisez.car.trace.IView;
 
 /**
  * Created by Krisez on 2017-12-13.
  */
 
-public interface Presenter {
-    void onCreate();
+public abstract class Presenter {
+    private IView mView;
+    private Context mContext;
 
-    void onStart();//暂时没用到
+    public Presenter(IView view, Context context) {
+        mView = view;
+        mContext = context;
+    }
 
-    void onStop();
+    public abstract void onCreate();
 
-    void onPause();//暂时没用到
+    abstract void onStart();//暂时没用到
 
-    void attachView(IView view);
+    abstract void onStop();
 
-    void attachIncomingIntent(Intent intent);//暂时没用到
+    abstract  void onPause();//暂时没用到
+
+   public void onDestroy(){
+       mContext = null;
+       mView = null;
+   }
+
+   abstract void attachIncomingIntent(Intent intent);//暂时没用到
 }

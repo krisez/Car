@@ -52,8 +52,16 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
 
-        <activity android:name=".ui.TraceHistoryActivity"
+        <activity android:name=".trace.TraceHistoryActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".video.VideoListActivity">
+            <intent-filter>
+                <action android:name="cn.krisez.car.video.List"/>
+                <category android:name="cn.krisez.car.video.history.TraceId"/>
+                <category android:name="cn.krisez.car.video.history"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

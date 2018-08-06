@@ -14,7 +14,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,19 +31,17 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
-import java.util.Locale;
 
-import cn.krisez.car.adapter.TraceHistoryAdapter;
+import cn.krisez.car.base.CheckPermissionsActivity;
 import cn.krisez.car.enevt.TraceEvent;
 import cn.krisez.car.map.MapController;
 import cn.krisez.car.map.MarkerInfoWindow;
-import cn.krisez.car.base.BasePermissionsActivity;
-import cn.krisez.car.enevt.SpeedEvent;
-import cn.krisez.car.ui.IMainView;
-import cn.krisez.car.ui.TraceHistoryActivity;
+import cn.krisez.car.trace.IMainView;
+import cn.krisez.car.trace.TraceHistoryActivity;
+import cn.krisez.car.utils.Const;
 import cn.krisez.car.video.VideoDetailActivity;
 
-public class MainActivity extends BasePermissionsActivity
+public class MainActivity extends CheckPermissionsActivity
         implements NavigationView.OnNavigationItemSelectedListener, IMainView {
     private MapController controller;
     private MapView mMapView;
@@ -213,8 +210,10 @@ public class MainActivity extends BasePermissionsActivity
         } else if (id == R.id.nav_trace_history) {
             startActivity(new Intent(MainActivity.this, TraceHistoryActivity.class));
         } else if (id == R.id.nav_video_history) {
-
+            startActivity(new Intent(Const.ACTITON_VIDEO_LIST));
         } else if (id == R.id.nav_setting) {
+
+        }else if(id == R.id.nav_about){
 
         }
 

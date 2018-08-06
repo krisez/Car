@@ -17,6 +17,7 @@ import java.util.List;
 import cn.krisez.car.R;
 import cn.krisez.car.enevt.TraceEvent;
 import cn.krisez.car.entity.TraceQuery;
+import cn.krisez.car.utils.Const;
 
 public class TraceHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<TraceQuery> mList;
@@ -46,7 +47,9 @@ public class TraceHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ((Activity)mContext).finish();
         });
         ((TraceHolder)holder).videoHistory.setOnClickListener(v->{
-            mContext.startActivity(new Intent("ACTION_VIDEO_HISTORY_TRACE_ID"));
+            mContext.startActivity(new Intent(Const.ACTITON_VIDEO_LIST)
+                    .addCategory(Const.CATEGORY_VIDEO_HISTORY_TRACE_ID)
+                    .putExtra("trace_id",traceQuery.getId()));
         });
     }
     @Override

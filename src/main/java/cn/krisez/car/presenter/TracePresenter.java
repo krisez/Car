@@ -2,12 +2,6 @@ package cn.krisez.car.presenter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
-import android.view.View;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,17 +9,21 @@ import java.util.List;
 import cn.krisez.car.Network.MySubscribe;
 import cn.krisez.car.Network.NetUtil;
 import cn.krisez.car.entity.TraceQuery;
-import cn.krisez.car.ui.ITraceView;
-import cn.krisez.car.ui.IView;
+import cn.krisez.car.trace.ITraceView;
+import cn.krisez.car.trace.IView;
 
-public class TracePresenter  implements Presenter{
+public class TracePresenter extends Presenter {
 
     private Context mContext;
     private List<TraceQuery> mList;
+    private ITraceView mITraceView;
 
-    public TracePresenter(Context context) {
-        mContext = context;
+    public TracePresenter(IView view, Context context) {
+        super(view,context);
+        this.mContext = context;
+        this.mITraceView = (ITraceView) view;
     }
+
 
     @Override
     public void onCreate() {
@@ -44,15 +42,13 @@ public class TracePresenter  implements Presenter{
 
     @Override
     public void onPause() {
-
     }
-
-    private ITraceView mITraceView;
 
     @Override
-    public void attachView(IView view) {
-        mITraceView = (ITraceView) view;
+    public void onDestroy() {
+        mList = null;
     }
+
 
     @Override
     public void attachIncomingIntent(Intent intent) {
@@ -69,6 +65,7 @@ public class TracePresenter  implements Presenter{
 
             @Override
             public void onNext(List<TraceQuery> object) {
+                mList.removeAll(mList);
                 mList.addAll(object);
             }
 

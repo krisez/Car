@@ -19,9 +19,8 @@ import com.amap.api.maps.model.MyLocationStyle;
 
 import java.util.List;
 
-import cn.krisez.car.MainActivity;
 import cn.krisez.car.R;
-import cn.krisez.car.ui.IMainView;
+import cn.krisez.car.trace.IMainView;
 
 public class MapController /*implements AMapLocationListener, LocationSource*/{
     private Context mContext;

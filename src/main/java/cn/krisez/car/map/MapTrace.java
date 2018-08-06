@@ -26,7 +26,7 @@ import cn.krisez.car.Network.MySubscribe;
 import cn.krisez.car.Network.NetUtil;
 import cn.krisez.car.R;
 import cn.krisez.car.entity.CarRoute;
-import cn.krisez.car.ui.IMainView;
+import cn.krisez.car.trace.IMainView;
 
 public class MapTrace {
     private Polyline mPolyline;
