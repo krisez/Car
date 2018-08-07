@@ -1,4 +1,4 @@
-package cn.krisez.car.trace;
+package cn.krisez.car.ui.trace;
 
 public interface IMainView extends IView {
     void traceOver();

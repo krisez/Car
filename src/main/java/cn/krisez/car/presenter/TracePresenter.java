@@ -6,11 +6,11 @@ import android.content.Intent;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.krisez.car.Network.MySubscribe;
-import cn.krisez.car.Network.NetUtil;
+import cn.krisez.car.network.MySubscribe;
+import cn.krisez.car.network.NetUtil;
 import cn.krisez.car.entity.TraceQuery;
-import cn.krisez.car.trace.ITraceView;
-import cn.krisez.car.trace.IView;
+import cn.krisez.car.ui.trace.ITraceView;
+import cn.krisez.car.ui.trace.IView;
 
 public class TracePresenter extends Presenter {
 
@@ -56,7 +56,8 @@ public class TracePresenter extends Presenter {
     }
 
     public void getTraceList(){
-        NetUtil.INSTANCE().create(new MySubscribe<List<TraceQuery>>() {
+
+        NetUtil.INSTANCE().createTrace(new MySubscribe<List<TraceQuery>>() {
 
             @Override
             public void onComplete() {

@@ -1,4 +1,4 @@
-package cn.krisez.car.trace;
+package cn.krisez.car.ui.trace;
 
 
 import java.util.List;

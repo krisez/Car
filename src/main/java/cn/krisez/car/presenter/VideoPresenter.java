@@ -2,23 +2,26 @@ package cn.krisez.car.presenter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.krisez.car.entity.VideoQuery;
-import cn.krisez.car.trace.ITraceView;
-import cn.krisez.car.trace.IView;
+import cn.krisez.car.network.MySubscribe;
+import cn.krisez.car.network.NetUtil;
+import cn.krisez.car.ui.trace.IView;
+import cn.krisez.car.ui.video.IVideoView;
 
 public class VideoPresenter extends Presenter {
     private Context mContext;
     private List<VideoQuery> mList;
-    private ITraceView mITraceView;
+    private IVideoView mView;
 
     public VideoPresenter(IView view, Context context) {
         super(view, context);
         this.mContext = context;
-        this.mITraceView = (ITraceView) view;
+        this.mView = (IVideoView) view;
     }
 
     @Override
@@ -43,11 +46,30 @@ public class VideoPresenter extends Presenter {
 
     @Override
     public void onDestroy() {
-
+        mList = null;
     }
+
+    private Intent mIntent;
 
     @Override
     public void attachIncomingIntent(Intent intent) {
+        this.mIntent = intent;
+    }
 
+    public void getVideoList(int pager,boolean down) {
+        NetUtil.INSTANCE().createVideo(new MySubscribe<List<VideoQuery>>() {
+            @Override
+            public void onNext(List<VideoQuery> objects) {
+                    mList.removeAll(mList);
+                    mList.addAll(objects);
+            }
+
+            @Override
+            public void onComplete() {
+                if (!down)
+                    mView.update(mList);
+                else mView.skip(mList);
+            }
+        }, "video", mIntent.getStringExtra("trace_id"), pager, true);
     }
 }

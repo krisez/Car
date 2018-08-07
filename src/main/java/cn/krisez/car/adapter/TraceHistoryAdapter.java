@@ -47,7 +47,7 @@ public class TraceHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ((Activity)mContext).finish();
         });
         ((TraceHolder)holder).videoHistory.setOnClickListener(v->{
-            mContext.startActivity(new Intent(Const.ACTITON_VIDEO_LIST)
+            mContext.startActivity(new Intent(Const.ACTION_VIDEO_LIST)
                     .addCategory(Const.CATEGORY_VIDEO_HISTORY_TRACE_ID)
                     .putExtra("trace_id",traceQuery.getId()));
         });

@@ -36,10 +36,10 @@ import cn.krisez.car.base.CheckPermissionsActivity;
 import cn.krisez.car.enevt.TraceEvent;
 import cn.krisez.car.map.MapController;
 import cn.krisez.car.map.MarkerInfoWindow;
-import cn.krisez.car.trace.IMainView;
-import cn.krisez.car.trace.TraceHistoryActivity;
+import cn.krisez.car.ui.trace.IMainView;
+import cn.krisez.car.ui.trace.TraceHistoryActivity;
 import cn.krisez.car.utils.Const;
-import cn.krisez.car.video.VideoDetailActivity;
+import cn.krisez.car.ui.video.VideoDetailActivity;
 
 public class MainActivity extends CheckPermissionsActivity
         implements NavigationView.OnNavigationItemSelectedListener, IMainView {
@@ -210,7 +210,7 @@ public class MainActivity extends CheckPermissionsActivity
         } else if (id == R.id.nav_trace_history) {
             startActivity(new Intent(MainActivity.this, TraceHistoryActivity.class));
         } else if (id == R.id.nav_video_history) {
-            startActivity(new Intent(Const.ACTITON_VIDEO_LIST));
+            startActivity(new Intent(Const.ACTION_VIDEO_LIST));
         } else if (id == R.id.nav_setting) {
 
         }else if(id == R.id.nav_about){

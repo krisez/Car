@@ -1,4 +1,4 @@
-package cn.krisez.car.video;
+package cn.krisez.car.utils;
 
 import android.content.Context;
 import android.util.AttributeSet;

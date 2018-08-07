@@ -1,4 +1,4 @@
-package cn.krisez.car.video;
+package cn.krisez.car.utils;
 
 import android.support.design.widget.AppBarLayout;
 

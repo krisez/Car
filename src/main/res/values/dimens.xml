@@ -9,4 +9,5 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="app_bar_size">64dp</dimen>
     <dimen name="tv_normal_size">18sp</dimen>
+    <dimen name="tv_small_size">16sp</dimen>
 </resources>

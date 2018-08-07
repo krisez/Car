@@ -12,11 +12,12 @@ import android.widget.Toast;
 
 import cn.krisez.car.R;
 import cn.krisez.car.presenter.Presenter;
-import cn.krisez.car.trace.IView;
+import cn.krisez.car.ui.trace.IView;
+import cn.krisez.car.widget.QQRefreshView;
 
-public abstract class BaseActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, IView {
+public abstract class BaseActivity extends AppCompatActivity implements QQRefreshView.RefreshListener, IView {
 
-    public SwipeRefreshLayout mSwipeRefreshLayout;
+    public QQRefreshView mRefreshView;
     private Presenter mPresenter;
 
     @SuppressLint("RestrictedApi")
@@ -32,13 +33,13 @@ public abstract class BaseActivity extends AppCompatActivity implements SwipeRef
         //getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         // getSupportActionBar().setHomeButtonEnabled(true);
         toolbar.setNavigationOnClickListener(v -> finish());
-        mSwipeRefreshLayout = findViewById(R.id.base_layout);
+        mRefreshView = findViewById(R.id.base_layout);
         View view = newView();
         assert view != null;
-        mSwipeRefreshLayout.addView(view);
+        mRefreshView.addView(view);
 
-        mSwipeRefreshLayout.setRefreshing(true);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mRefreshView.setRefreshState(QQRefreshView.REFRESHING);
+        mRefreshView.setRefreshListener(this);
 
         mPresenter = presenter();
         if (mPresenter != null) {
@@ -47,20 +48,7 @@ public abstract class BaseActivity extends AppCompatActivity implements SwipeRef
         init();
 
         TextView textView = findViewById(R.id.tv_filter);
-        switch (type()) {
-            case "trace":
-                textView.setOnClickListener(v -> {
-                    //TODO:popWindow动画并筛选
-                });
-                break;
-            case "video":
-                textView.setOnClickListener(v -> {
-                    //TODO:popWindow动画并筛选
-                });
-                break;
-            default:
-                break;
-        }
+        textView.setOnClickListener(this::filterClick);
     }
 
     protected abstract View newView();
@@ -68,6 +56,8 @@ public abstract class BaseActivity extends AppCompatActivity implements SwipeRef
     protected abstract Presenter presenter();
 
     protected abstract void init();
+
+    protected abstract void filterClick(View v);
 
     public void toast(String s) {
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
@@ -84,8 +74,8 @@ public abstract class BaseActivity extends AppCompatActivity implements SwipeRef
     @Override
     public void error(String s) {
         toast(s);
-        if (mSwipeRefreshLayout.isRefreshing()) {
-            mSwipeRefreshLayout.setRefreshing(false);
+        if (mRefreshView.getRefreshState()==QQRefreshView.REFRESHING) {
+            mRefreshView.finishRefresh(false);
         }
     }
 

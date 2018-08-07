@@ -2,11 +2,10 @@ package cn.krisez.car;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
 import com.squareup.leakcanary.LeakCanary;
 
-import cn.krisez.car.Network.NetUtil;
+import cn.krisez.car.network.NetUtil;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 public class App extends Application {

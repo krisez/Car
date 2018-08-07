@@ -1,4 +1,4 @@
-package cn.krisez.car.trace;
+package cn.krisez.car.ui.trace;
 
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +15,7 @@ import cn.krisez.car.entity.TraceQuery;
 import cn.krisez.car.presenter.Presenter;
 import cn.krisez.car.presenter.TracePresenter;
 import cn.krisez.car.widget.DividerDecoration;
+import cn.krisez.car.widget.QQRefreshView;
 
 public class TraceHistoryActivity extends BaseActivity implements ITraceView {
     @Override
@@ -44,6 +45,11 @@ public class TraceHistoryActivity extends BaseActivity implements ITraceView {
     }
 
     @Override
+    protected void filterClick(View v) {
+
+    }
+
+    @Override
     protected String type() {
         return "trace";
     }
@@ -55,11 +61,11 @@ public class TraceHistoryActivity extends BaseActivity implements ITraceView {
 
     @Override
     public void update(List<TraceQuery> list) {
-        if (mSwipeRefreshLayout.isRefreshing()) {
+        if (mRefreshView.getRefreshState()== QQRefreshView.REFRESHING) {
             mList.removeAll(mList);
             mList.addAll(list);
             mAdapter.notifyDataSetChanged();
-            mSwipeRefreshLayout.setRefreshing(false);
+            mRefreshView.finishRefresh(true);
         }
     }
 }

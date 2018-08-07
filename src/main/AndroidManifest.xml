@@ -47,18 +47,21 @@
         <service android:name="com.amap.api.location.APSService" />
 
         <activity
-            android:name=".video.VideoDetailActivity"
+            android:name=".ui.video.VideoDetailActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
 
-        <activity android:name=".trace.TraceHistoryActivity"
+        <activity android:name=".ui.trace.TraceHistoryActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".video.VideoListActivity">
+
+        <activity android:name=".ui.video.VideoListActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="cn.krisez.car.video.List"/>
-                <category android:name="cn.krisez.car.video.history.TraceId"/>
-                <category android:name="cn.krisez.car.video.history"/>
+                <action android:name="cn.krisez.car.ui.video.List"/>
+                <category android:name="cn.krisez.car.ui.video.history.TraceId"/>
+                <category android:name="cn.krisez.car.ui.video.history"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>

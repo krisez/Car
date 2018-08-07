@@ -1,9 +1,6 @@
-package cn.krisez.car.Network;
+package cn.krisez.car.network;
 
 import android.content.Context;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -73,17 +70,23 @@ public class NetUtil {
         addCallAdapter = true;
     }
 
-    public void create(Observer<List<TraceQuery>> observer, String type, String traceId, boolean isMain){
+    public void createTrace(Observer<List<TraceQuery>> observer, String type, String traceId, boolean isMain){
         NetServiceApi api = mRetrofit.create(NetServiceApi.class);
-        createRx(api.query(type,traceId),observer,isMain);
+        createRx(api.trace(type,traceId),observer,isMain);
     }
 
-    public void create(Observer<List<CarRoute>> observer, String id, boolean isMain){
+    public void createVideo(Observer<List<VideoQuery>> observer, String type, String traceId,int pager, boolean isMain){
+        NetServiceApi api = mRetrofit.create(NetServiceApi.class);
+        if(traceId==null) traceId="";
+        createRx(api.video(type,traceId,pager),observer,isMain);
+    }
+
+    public void getPoints(Observer<List<CarRoute>> observer, String id, boolean isMain){
         NetServiceApi api = mRetrofit.create(NetServiceApi.class);
         createRx(api.getRoutes(id),observer,isMain);
     }
 
-   /* public void create(Observer<?> observer, String u, String p, boolean isMain){
+   /* public void createTrace(Observer<?> observer, String u, String p, boolean isMain){
        //TODO:其他网络库处理内容
     }*/
 

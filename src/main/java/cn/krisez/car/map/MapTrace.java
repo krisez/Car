@@ -22,11 +22,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-import cn.krisez.car.Network.MySubscribe;
-import cn.krisez.car.Network.NetUtil;
+import cn.krisez.car.network.MySubscribe;
+import cn.krisez.car.network.NetUtil;
 import cn.krisez.car.R;
 import cn.krisez.car.entity.CarRoute;
-import cn.krisez.car.trace.IMainView;
+import cn.krisez.car.ui.trace.IMainView;
 
 public class MapTrace {
     private Polyline mPolyline;
@@ -42,7 +42,7 @@ public class MapTrace {
     }
 
     public void startTrace(String id) {
-        NetUtil.INSTANCE().create(new MySubscribe<List<CarRoute>>() {
+        NetUtil.INSTANCE().getPoints(new MySubscribe<List<CarRoute>>() {
             @Override
             public void onNext(List<CarRoute> carRoutes) {
                 mList.addAll(carRoutes);

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".video.VideoDetailActivity">
+    tools:context=".ui.video.VideoDetailActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -32,7 +32,7 @@
                 app:layout_collapseParallaxMultiplier="0.7"
                 android:fitsSystemWindows="true">
 
-                <cn.krisez.car.video.LandLayoutVideo
+                <cn.krisez.car.utils.LandLayoutVideo
                     android:id="@+id/detail_player"
                     android:layout_width="match_parent"
                     android:layout_height="200dp" />

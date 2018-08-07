@@ -5,20 +5,14 @@ public class VideoQuery {
     private String time;// xxxx-xx-xx xx:xx:xx
     private String url;//播放地址
     private String trace_id;
+    private String addr;//记录地址
 
-    public VideoQuery(String thumb, String time, String url, String trace_id) {
+    public VideoQuery(String thumb, String time, String url, String trace_id, String addr) {
         this.thumb = thumb;
         this.time = time;
         this.url = url;
         this.trace_id = trace_id;
-    }
-
-    public String getTrace_id() {
-        return trace_id;
-    }
-
-    public void setTrace_id(String trace_id) {
-        this.trace_id = trace_id;
+        this.addr = addr;
     }
 
     public String getThumb() {
@@ -43,5 +37,21 @@ public class VideoQuery {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getTrace_id() {
+        return trace_id;
+    }
+
+    public void setTrace_id(String trace_id) {
+        this.trace_id = trace_id;
+    }
+
+    public String getAddr() {
+        return addr;
+    }
+
+    public void setAddr(String addr) {
+        this.addr = addr;
     }
 }

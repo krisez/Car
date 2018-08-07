@@ -1,11 +1,6 @@
 package cn.krisez.car;
 
-import com.google.gson.JsonObject;
-
 import org.junit.Test;
-
-import cn.krisez.car.Network.MySubscribe;
-import cn.krisez.car.Network.NetUtil;
 
 import static org.junit.Assert.*;
 

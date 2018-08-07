@@ -1,4 +1,4 @@
-package cn.krisez.car.video;
+package cn.krisez.car.ui.video;
 
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
@@ -21,7 +21,9 @@ import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 
 import cn.krisez.car.R;
+import cn.krisez.car.utils.AppBarStateChangeListener;
 import cn.krisez.car.utils.DensityUtil;
+import cn.krisez.car.utils.LandLayoutVideo;
 
 public class VideoDetailActivity extends AppCompatActivity {
     private boolean isPlay;
@@ -60,7 +62,7 @@ public class VideoDetailActivity extends AppCompatActivity {
         //增加封面
         ImageView imageView = new ImageView(this);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        Bitmap bitmap = DensityUtil.readBitMap(this, R.drawable.cq);
+        Bitmap bitmap = DensityUtil.readBitMap(this, R.drawable.video_info);
         imageView.setImageBitmap(bitmap);
 
         //增加title
