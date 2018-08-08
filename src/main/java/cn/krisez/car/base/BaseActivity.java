@@ -1,9 +1,10 @@
 package cn.krisez.car.base;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -13,11 +14,11 @@ import android.widget.Toast;
 import cn.krisez.car.R;
 import cn.krisez.car.presenter.Presenter;
 import cn.krisez.car.ui.trace.IView;
-import cn.krisez.car.widget.QQRefreshView;
+import cn.krisez.car.widget.RefreshView;
 
-public abstract class BaseActivity extends AppCompatActivity implements QQRefreshView.RefreshListener, IView {
+public abstract class BaseActivity extends AppCompatActivity implements RefreshView.RefreshListener, IView {
 
-    public QQRefreshView mRefreshView;
+    public RefreshView mRefreshView;
     private Presenter mPresenter;
 
     @SuppressLint("RestrictedApi")
@@ -38,8 +39,10 @@ public abstract class BaseActivity extends AppCompatActivity implements QQRefres
         assert view != null;
         mRefreshView.addView(view);
 
-        mRefreshView.setRefreshState(QQRefreshView.REFRESHING);
+        mRefreshView.refreshing();
         mRefreshView.setRefreshListener(this);
+        mRefreshView.setRefreshMaxHeight(mRefreshView.dp(40));
+        mRefreshView.setRefreshViewHeight(mRefreshView.dp(40));
 
         mPresenter = presenter();
         if (mPresenter != null) {
@@ -74,7 +77,7 @@ public abstract class BaseActivity extends AppCompatActivity implements QQRefres
     @Override
     public void error(String s) {
         toast(s);
-        if (mRefreshView.getRefreshState()==QQRefreshView.REFRESHING) {
+        if (mRefreshView.getRefreshState() == RefreshView.REFRESHING) {
             mRefreshView.finishRefresh(false);
         }
     }

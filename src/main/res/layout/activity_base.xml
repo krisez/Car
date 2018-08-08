@@ -37,7 +37,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <cn.krisez.car.widget.QQRefreshView
+    <cn.krisez.car.widget.RefreshView
         android:id="@+id/base_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"

@@ -19,7 +19,7 @@ import cn.krisez.car.entity.VideoQuery;
 import cn.krisez.car.presenter.Presenter;
 import cn.krisez.car.presenter.VideoPresenter;
 import cn.krisez.car.widget.DividerDecoration;
-import cn.krisez.car.widget.QQRefreshView;
+import cn.krisez.car.widget.RefreshView;
 
 public class VideoListActivity extends BaseActivity implements IVideoView {
 
@@ -105,7 +105,7 @@ public class VideoListActivity extends BaseActivity implements IVideoView {
 
     @Override
     public void update(List<VideoQuery> list) {
-        if (mRefreshView.getRefreshState() == QQRefreshView.REFRESHING) {
+        if (mRefreshView.getRefreshState() == RefreshView.REFRESHING) {
             mList.removeAll(mList);
             mList.addAll(list);
             mAdapter.notifyDataSetChanged();

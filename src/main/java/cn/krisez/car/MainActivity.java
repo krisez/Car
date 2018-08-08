@@ -130,6 +130,7 @@ public class MainActivity extends CheckPermissionsActivity
     }
 
     ValueAnimator animator;
+
     public void startAnimation(View view) {
         marker.showInfoWindow();
         if (tvShowSpeed.getVisibility() == View.GONE) {
@@ -213,7 +214,7 @@ public class MainActivity extends CheckPermissionsActivity
             startActivity(new Intent(Const.ACTION_VIDEO_LIST));
         } else if (id == R.id.nav_setting) {
 
-        }else if(id == R.id.nav_about){
+        } else if (id == R.id.nav_about) {
 
         }
 
@@ -245,7 +246,7 @@ public class MainActivity extends CheckPermissionsActivity
     protected void onDestroy() {
         super.onDestroy();
         controller.onDestroy();
-        if (animator.isStarted()) {
+        if (animator != null && animator.isStarted()) {
             animator.end();
             animator.removeAllUpdateListeners();
         }
