@@ -21,8 +21,7 @@ import cn.krisez.car.utils.ScreenUtils;
 
 
 /**
- * 作者：yangpeixing on 16/9/6 15:14
- * 博客主页：http://blog.csdn.net/qq_16674697?viewmode=list
+ * 贝塞尔曲线
  */
 public class BezierView extends View {
     /**

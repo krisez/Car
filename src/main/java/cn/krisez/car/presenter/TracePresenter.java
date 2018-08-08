@@ -57,7 +57,7 @@ public class TracePresenter extends Presenter {
 
     public void getTraceList(){
 
-        NetUtil.INSTANCE().createTrace(new MySubscribe<List<TraceQuery>>() {
+        NetUtil.INSTANCE().createTrace(new MySubscribe<List<TraceQuery>>(mITraceView) {
 
             @Override
             public void onComplete() {
@@ -68,12 +68,6 @@ public class TracePresenter extends Presenter {
             public void onNext(List<TraceQuery> object) {
                 mList.removeAll(mList);
                 mList.addAll(object);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                super.onError(e);
-                mITraceView.error(e.getMessage());
             }
         },"trace","",true);
     }

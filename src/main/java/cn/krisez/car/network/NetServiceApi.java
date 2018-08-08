@@ -10,18 +10,18 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 interface NetServiceApi {
-    /*@GET("map/query.ca")
+    @GET("map/query.ca")
     Observable<List<TraceQuery>> trace(@Query("type") String type, @Query("trace_id") String id);
 
     @GET("map/query.ca")
-    Observable<List<VideoQuery>> video(@Query("type") String type, @Query("trace_id") String id,@Query("pager")int pager);*/
+    Observable<List<VideoQuery>> video(@Query("type") String type, @Query("trace_id") String id,@Query("pager")int pager);
 
 
-    @GET("query.ca")
+/*    @GET("query.ca")
     Observable<List<TraceQuery>> trace(@Query("type") String type, @Query("trace_id") String id);
 
     @GET("query.ca")
-    Observable<List<VideoQuery>> video(@Query("type") String type, @Query("trace_id") String id,@Query("pager")int pager);
+    Observable<List<VideoQuery>> video(@Query("type") String type, @Query("trace_id") String id,@Query("pager")int pager);*/
 
 
     @GET("map")

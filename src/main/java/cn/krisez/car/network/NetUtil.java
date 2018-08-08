@@ -56,8 +56,7 @@ public class NetUtil {
                 .readTimeout(3,TimeUnit.SECONDS).build();
         mRetrofit = new Retrofit.Builder()
                 .client(okHttpClient)
-                //.baseUrl("http://krisez.cn/")
-                .baseUrl("http://192.168.43.97:8080/")
+                .baseUrl("http://krisez.cn/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }

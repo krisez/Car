@@ -57,7 +57,7 @@ public class VideoPresenter extends Presenter {
     }
 
     public void getVideoList(int pager,boolean down) {
-        NetUtil.INSTANCE().createVideo(new MySubscribe<List<VideoQuery>>() {
+        NetUtil.INSTANCE().createVideo(new MySubscribe<List<VideoQuery>>(mView) {
             @Override
             public void onNext(List<VideoQuery> objects) {
                     mList.removeAll(mList);

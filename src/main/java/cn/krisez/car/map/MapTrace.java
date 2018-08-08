@@ -42,7 +42,7 @@ public class MapTrace {
     }
 
     public void startTrace(String id) {
-        NetUtil.INSTANCE().getPoints(new MySubscribe<List<CarRoute>>() {
+        NetUtil.INSTANCE().getPoints(new MySubscribe<List<CarRoute>>(mIMainView) {
             @Override
             public void onNext(List<CarRoute> carRoutes) {
                 mList.addAll(carRoutes);
