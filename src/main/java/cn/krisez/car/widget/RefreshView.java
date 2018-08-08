@@ -28,8 +28,7 @@ import cn.krisez.car.utils.ScreenUtils;
 
 
 /**
- * 作者：yangpeixing on 16/11/17 11:14
- * 博客主页：http://blog.csdn.net/qq_16674697?viewmode=list
+ * 刷新界面
  */
 public class RefreshView extends LinearLayout {
     /**
