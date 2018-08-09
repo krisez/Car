@@ -8,11 +8,10 @@
 
     <TextView
         android:id="@+id/item_video_time"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/light_gray"
         android:textSize="@dimen/tv_small_size"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_margin="4dp"

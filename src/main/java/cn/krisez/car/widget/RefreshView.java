@@ -350,16 +350,20 @@ public class RefreshView extends LinearLayout {
                     return false;
                 }
             }else if (childView instanceof RecyclerView) {
-                RecyclerView.LayoutManager manager=((RecyclerView)childView).getLayoutManager();
-                int top=0;
-                if(manager instanceof LinearLayoutManager){
-                    top = ((LinearLayoutManager)manager).findFirstVisibleItemPosition();
-                }else  if(manager instanceof StaggeredGridLayoutManager){
-                    top = ((StaggeredGridLayoutManager)manager).findFirstVisibleItemPositions(null)[0];
+                RecyclerView.LayoutManager manager = ((RecyclerView) childView).getLayoutManager();
+                int top = 0;
+                if (manager instanceof LinearLayoutManager) {
+                    top = ((LinearLayoutManager) manager).findFirstVisibleItemPosition();
+                } else if (manager instanceof StaggeredGridLayoutManager) {
+                    top = ((StaggeredGridLayoutManager) manager).findFirstVisibleItemPositions(null)[0];
                 }
                 View v = ((RecyclerView) childView).getChildAt(0);
-                float up = v.getY() - v.getPaddingTop() - v.getTop();
-                return up == 0 && top == 0;
+                int a[] = new int[2];
+                v.getLocationOnScreen(a);
+                if (v.getY()>=0) {
+                    float up = v.getY() - v.getPaddingTop() - v.getTop();
+                    return up == 0 && top == 0;
+                }
             }
 
         }

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cn.krisez.car.widget.SpreadView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/pop_tv_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/filter"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="@string/time"
+            android:layout_margin="@dimen/margin_small"
+            android:textSize="@dimen/tv_normal_size" />
+
+        <LinearLayout
+            android:id="@+id/pop_time_picker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/pop_tv_time"
+            android:focusableInTouchMode="false"
+            android:layout_margin="@dimen/margin_small"
+            >
+
+            <TextView
+                android:id="@+id/pop_tv_start"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:text="2018/08/01"
+                android:gravity="center"
+                android:textSize="@dimen/tv_small_size"
+                android:textColor="@color/white"/>
+            <View
+                android:layout_width="24dp"
+                android:layout_height="1dp"
+                android:layout_gravity="center"
+                android:background="@color/yellow"/>
+            <TextView
+                android:id="@+id/pop_tv_end"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="1"
+                tools:text="2018/08/01"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/pop_tv_distance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/distance"
+            android:textSize="@dimen/tv_normal_size"
+            android:textColor="@color/filter"
+            android:layout_margin="@dimen/margin_small"
+            app:layout_constraintTop_toBottomOf="@id/pop_time_picker"/>
+
+        <TextView
+            app:layout_constraintTop_toBottomOf="@id/pop_tv_distance"
+            android:layout_width="match_parent"
+            android:layout_margin="@dimen/margin_small"
+            android:layout_height="wrap_content"
+            android:text="@string/zero"
+            android:textSize="@dimen/tv_small_size"
+            android:textColor="@color/white"
+            android:id="@+id/pop_tv_set_dis"
+            />
+
+        <View
+            app:layout_constraintTop_toBottomOf="@id/pop_tv_set_dis"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/yellow"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_small"
+            app:layout_constraintTop_toBottomOf="@id/pop_tv_set_dis"
+            >
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="#00ffffff"
+                android:text="@string/reset"
+                android:id="@+id/pop_reset"
+                android:textColor="@color/light_gray"
+                android:layout_weight="1"/>
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="#00ffffff"
+                android:text="@string/ok"
+                android:id="@+id/pop_sure"
+                android:textColor="@color/light_gray"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+
+    </android.support.constraint.ConstraintLayout>
+</cn.krisez.car.widget.SpreadView>

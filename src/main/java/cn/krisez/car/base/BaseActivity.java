@@ -7,9 +7,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.lang.reflect.Field;
+import java.util.Objects;
 
 import cn.krisez.car.R;
 import cn.krisez.car.presenter.Presenter;
@@ -48,7 +52,7 @@ public abstract class BaseActivity extends AppCompatActivity implements RefreshV
         if (mPresenter != null) {
             mPresenter.onCreate();
         }
-        init();
+        init(savedInstanceState);
 
         TextView textView = findViewById(R.id.tv_filter);
         textView.setOnClickListener(this::filterClick);
@@ -58,12 +62,35 @@ public abstract class BaseActivity extends AppCompatActivity implements RefreshV
 
     protected abstract Presenter presenter();
 
-    protected abstract void init();
+    protected abstract void init(Bundle bundle);
 
     protected abstract void filterClick(View v);
 
+    public int barBottomY(){
+        return Objects.requireNonNull(getSupportActionBar()).getHeight()+getStatusBarHeight();
+
+    }
+
     public void toast(String s) {
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+    }
+
+    private int getStatusBarHeight() {
+        Class<?> c = null;
+        Object obj = null;
+        Field field = null;
+        int x = 0;
+        try {
+            c = Class.forName("com.android.internal.R$dimen");
+            obj = c.newInstance();
+            field = c.getField("status_bar_height");
+            x = Integer.parseInt(field.get(obj).toString());
+            return getResources().getDimensionPixelSize(x);
+        } catch (Exception e1) {
+            Log.d("asdasd", "get status bar height fail");
+            e1.printStackTrace();
+            return 75;
+        }
     }
 
     /**
@@ -80,6 +107,29 @@ public abstract class BaseActivity extends AppCompatActivity implements RefreshV
         if (mRefreshView.getRefreshState() == RefreshView.REFRESHING) {
             mRefreshView.finishRefresh(false);
         }
+    }
+
+    protected boolean compare(String s, String p, int o) {
+        String[] ss = s.split("/");
+        String[] ll = p.split("-");
+        switch (o) {
+            //  >=
+            case 1:
+                if (Integer.parseInt(ss[0]) == Integer.parseInt(ll[0])) {
+                    if (Integer.parseInt(ss[1]) == Integer.parseInt(ll[1])){
+                        return Integer.parseInt(ss[2]) > Integer.parseInt(ll[2]);
+                    }else return Integer.parseInt(ss[1]) > Integer.parseInt(ll[1]);
+                } else return Integer.parseInt(ss[0]) > Integer.parseInt(ll[0]);
+
+                // <=
+            case 2:
+                if (Integer.parseInt(ss[0]) == Integer.parseInt(ll[0])) {
+                    if (Integer.parseInt(ss[1]) == Integer.parseInt(ll[1])){
+                        return Integer.parseInt(ss[2]) < Integer.parseInt(ll[2]);
+                    }else return Integer.parseInt(ss[1]) < Integer.parseInt(ll[1]);
+                } else return Integer.parseInt(ss[0]) < Integer.parseInt(ll[0]);
+        }
+        return false;
     }
 
 

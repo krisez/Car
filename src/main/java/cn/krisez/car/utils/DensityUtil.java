@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.util.Calendar;
 
 public class DensityUtil {
 
@@ -60,6 +61,10 @@ public class DensityUtil {
         assert wm != null;
         wm.getDefaultDisplay().getMetrics(outMetrics);
         return outMetrics.heightPixels;
+    }
+
+    public static String strDate(Calendar calendar){
+        return calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH)+1) + "/" + calendar.get(Calendar.DAY_OF_MONTH);
     }
 
     /**
