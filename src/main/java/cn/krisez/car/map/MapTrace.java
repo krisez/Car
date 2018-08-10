@@ -108,7 +108,7 @@ public class MapTrace {
         //LatLngBounds bounds = new LatLngBounds(queryPoints(list,1), queryPoints(list,2));
         LatLngBounds.Builder builder = LatLngBounds.builder();
 
-        for (int i = 0; i < list.size() - 1; i++) {
+        for (int i = 0; i < list.size(); i++) {
             builder.include(list.get(i));
         }
 //

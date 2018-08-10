@@ -14,14 +14,21 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.SeekBar;
+import android.widget.CompoundButton;
+import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amap.api.maps.AMap;
+import com.amap.api.maps.AMapOptions;
+import com.amap.api.maps.CameraUpdate;
+import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
+import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyTrafficStyle;
@@ -34,6 +41,7 @@ import java.util.List;
 
 import cn.krisez.car.base.CheckPermissionsActivity;
 import cn.krisez.car.enevt.TraceEvent;
+import cn.krisez.car.entity.CarRoute;
 import cn.krisez.car.map.MapController;
 import cn.krisez.car.map.MarkerInfoWindow;
 import cn.krisez.car.ui.trace.IMainView;
@@ -47,7 +55,8 @@ public class MainActivity extends CheckPermissionsActivity
     private MapView mMapView;
     private TextView tvShowSpeed;
     private ConstraintLayout mBottom;
-    private SeekBar mSeekBar;
+    private ProgressBar mProgressBar;
+    private AMap mAMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,28 +78,28 @@ public class MainActivity extends CheckPermissionsActivity
         mMapView = findViewById(R.id.mv_show);
         tvShowSpeed = findViewById(R.id.tv_show_speed);
         mBottom = findViewById(R.id.bottom);
-        mSeekBar = findViewById(R.id.pb_fraction);
+        mProgressBar = findViewById(R.id.pb_fraction);
 
         controller = new MapController(this);
         controller.map(mMapView).view(this).defaultAmap().create(savedInstanceState);
         //可以获得AMap 继续对其另外的操作
-        AMap aMap = mMapView.getMap();
+        mAMap = mMapView.getMap();
         MyTrafficStyle myTrafficStyle = new MyTrafficStyle();
         myTrafficStyle.setSeriousCongestedColor(Color.parseColor("#790000"));
         myTrafficStyle.setCongestedColor(Color.parseColor("#ff0000"));
         myTrafficStyle.setSlowColor(Color.parseColor("#a9c433"));
         myTrafficStyle.setSmoothColor(Color.parseColor("#5c71fc71"));
-        aMap.setMyTrafficStyle(myTrafficStyle);
-        aMap.setTrafficEnabled(true);
+        mAMap.setMyTrafficStyle(myTrafficStyle);
+        mAMap.setTrafficEnabled(true);
 
-        aMap.setInfoWindowAdapter(new MarkerInfoWindow(this));
+        mAMap.setInfoWindowAdapter(new MarkerInfoWindow(this));
 
-        aMap.setOnMarkerClickListener(marker -> {
+        /*mAMap.setOnMarkerClickListener(marker -> {
             Toast.makeText(MainActivity.this, "点击Marker", Toast.LENGTH_SHORT).show();
             return true;
-        });
+        });*/
 
-        aMap.setOnInfoWindowClickListener(marker -> {
+        mAMap.setOnInfoWindowClickListener(marker -> {
             startActivity(new Intent(MainActivity.this, VideoDetailActivity.class));
         });
     }
@@ -98,6 +107,8 @@ public class MainActivity extends CheckPermissionsActivity
     Marker marker;
 
     public void setMarker() {
+        mSwitch = findViewById(R.id.map_switch);
+
         List<LatLng> list = controller.getTracePoints();
         MarkerOptions options = new MarkerOptions();
         LatLng latLng1 = list.get(0);
@@ -110,6 +121,17 @@ public class MainActivity extends CheckPermissionsActivity
                 .rotateAngle(angle)
                 .anchor(0.5f, 0.5f);
         marker = controller.setMarkerOption(options).getMarker();
+
+        mSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(!isChecked){
+                follow = false;
+                LatLngBounds.Builder builder = LatLngBounds.builder();
+                for (int i = 0; i < list.size(); i++) {
+                    builder.include(list.get(i));
+                }
+                mAMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 0));
+            }else follow = true;
+        });
     }
 
     private float getAngle(LatLng latLng1, LatLng latLng2) {
@@ -131,14 +153,24 @@ public class MainActivity extends CheckPermissionsActivity
 
     ValueAnimator animator;
 
+    private Switch mSwitch;
+    private boolean follow = false;
+
     public void startAnimation(View view) {
+        mSwitch.setVisibility(View.VISIBLE);
         marker.showInfoWindow();
         if (tvShowSpeed.getVisibility() == View.GONE) {
             tvShowSpeed.setVisibility(View.VISIBLE);
         }
         animator = (ValueAnimator) controller.getMarkerAnimator(46000);
         animator.addUpdateListener(animation -> {
-            mSeekBar.setProgress((int) (animation.getAnimatedFraction() * 100));
+            if(follow){
+                CarRoute carRoute = (CarRoute) animation.getAnimatedValue();
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(carRoute.getLatLng()).bearing(-(float) carRoute.getBearing()).zoom(18).tilt(45).build();
+                mAMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            }
+            mProgressBar.setProgress((int) (animation.getAnimatedFraction() * 100));
             if (animation.getAnimatedFraction() == 1) {
                 tvShowSpeed.setVisibility(View.GONE);
             }
@@ -164,15 +196,16 @@ public class MainActivity extends CheckPermissionsActivity
         if (marker != null) {
             marker.remove();
         }
+        mSwitch.setVisibility(View.GONE);
         mBottom.setVisibility(View.GONE);
-        mSeekBar.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void traceOver() {
         setMarker();
         mBottom.setVisibility(View.VISIBLE);
-        mSeekBar.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -207,7 +240,8 @@ public class MainActivity extends CheckPermissionsActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_people_center) {
-            startActivity(new Intent(MainActivity.this, PeopleActivity.class));
+            error("无");
+            //startActivity(new Intent(MainActivity.this, PeopleActivity.class));
         } else if (id == R.id.nav_trace_history) {
             startActivity(new Intent(MainActivity.this, TraceHistoryActivity.class));
         } else if (id == R.id.nav_video_history) {

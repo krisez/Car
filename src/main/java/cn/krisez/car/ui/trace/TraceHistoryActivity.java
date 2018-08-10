@@ -137,6 +137,9 @@ public class TraceHistoryActivity extends BaseActivity implements ITraceView {
         });
         layout.findViewById(R.id.pop_sure).setOnClickListener(v -> filterOp(start.getText().toString(),end.getText().toString()));
 
+        TextView textView = layout.findViewById(R.id.pop_tv_distance);
+        String dd = textView.getText().toString() + "(暂不可用)";
+        textView.setText(dd);
         TextView distance = layout.findViewById(R.id.pop_tv_set_dis);
         distance.setOnClickListener(v->{
             int d = Integer.parseInt(distance.getText().toString()) + 10;

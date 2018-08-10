@@ -167,10 +167,10 @@ public class VideoListActivity extends BaseActivity implements IVideoView {
             filterOp(start.getText().toString(), end.getText().toString());
         });
 
-        TextView distance = layout.findViewById(R.id.pop_tv_set_dis);
-        distance.setOnClickListener(v -> {
-
-        });
+        TextView textView = layout.findViewById(R.id.pop_tv_distance);
+        String dd = textView.getText().toString() + "(暂不可用)";
+        textView.setText(dd);
+        layout.findViewById(R.id.pop_tv_set_dis).setClickable(false);
     }
 
     private void filterOp(String s, String e) {

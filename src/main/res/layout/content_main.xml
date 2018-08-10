@@ -11,30 +11,41 @@
     <com.amap.api.maps.MapView
         android:id="@+id/mv_show"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </com.amap.api.maps.MapView>
+        android:layout_height="match_parent"></com.amap.api.maps.MapView>
 
     <TextView
         android:id="@+id/tv_show_speed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#fff"
-        android:textColor="#000"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="100dp"
-        tools:text="当前时速：20km"
-        />
+        android:background="@color/white"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="当前时速：20km" />
 
-    <SeekBar
+    <Switch
+        android:visibility="gone"
+        android:id="@+id/map_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_small"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginTop="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
         android:id="@+id/pb_fraction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:max="100"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/bottom"/>
+        app:layout_constraintBottom_toTopOf="@id/bottom" />
+
     <android.support.constraint.ConstraintLayout
         android:id="@+id/bottom"
         android:layout_width="match_parent"
@@ -42,22 +53,23 @@
         android:layout_margin="16dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent">
+
         <Button
             android:id="@+id/start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="start"
             android:onClick="startAnimation"
+            android:text="start"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            app:layout_constraintStart_toEndOf="@id/start"
+            android:id="@+id/pause"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="pause"
             android:onClick="pause"
-            android:id="@+id/pause"/>
+            android:text="pause"
+            app:layout_constraintStart_toEndOf="@id/start" />
 
         <Button
             android:id="@+id/clear"
@@ -66,7 +78,7 @@
             android:onClick="clear"
             android:text="clear"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/pause"/>
+            app:layout_constraintStart_toEndOf="@id/pause" />
 
     </android.support.constraint.ConstraintLayout>
 
