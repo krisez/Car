@@ -130,7 +130,6 @@ public class TraceHistoryActivity extends BaseActivity implements ITraceView {
         });
 
         layout.findViewById(R.id.pop_reset).setOnClickListener(v -> {
-            Log.d("TraceHistoryActivity", "initLayout:" + 123);
             mRefreshView.refreshing();
             mTracePresenter.getTraceList();
             mPopupWindow.dismiss();

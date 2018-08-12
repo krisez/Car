@@ -158,10 +158,10 @@ public class VideoListActivity extends BaseActivity implements IVideoView {
         });
 
         layout.findViewById(R.id.pop_reset).setOnClickListener(v -> {
-            mAdapter.refresh();
-            mPresenter.getVideoList(pager = 1, false);
-            pager++;
+            mRefreshView.refreshing();
+            mPresenter.getVideoList(pager=1,false);
             mPopupWindow.dismiss();
+            pager++;
         });
         layout.findViewById(R.id.pop_sure).setOnClickListener(v -> {
             filterOp(start.getText().toString(), end.getText().toString());
