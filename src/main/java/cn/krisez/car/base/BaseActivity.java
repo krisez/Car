@@ -1,8 +1,6 @@
 package cn.krisez.car.base;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +15,7 @@ import java.util.Objects;
 
 import cn.krisez.car.R;
 import cn.krisez.car.presenter.Presenter;
-import cn.krisez.car.ui.trace.IView;
+import cn.krisez.car._interface.IView;
 import cn.krisez.car.widget.RefreshView;
 
 public abstract class BaseActivity extends AppCompatActivity implements RefreshView.RefreshListener, IView {

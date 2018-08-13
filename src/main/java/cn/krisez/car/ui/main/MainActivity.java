@@ -1,4 +1,4 @@
-package cn.krisez.car;
+package cn.krisez.car.ui.main;
 
 import android.animation.ValueAnimator;
 import android.content.Intent;
@@ -14,15 +14,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amap.api.maps.AMap;
-import com.amap.api.maps.AMapOptions;
-import com.amap.api.maps.CameraUpdate;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
@@ -39,12 +36,12 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
+import cn.krisez.car.R;
 import cn.krisez.car.base.CheckPermissionsActivity;
 import cn.krisez.car.enevt.TraceEvent;
 import cn.krisez.car.entity.CarRoute;
 import cn.krisez.car.map.MapController;
 import cn.krisez.car.map.MarkerInfoWindow;
-import cn.krisez.car.ui.trace.IMainView;
 import cn.krisez.car.ui.trace.TraceHistoryActivity;
 import cn.krisez.car.utils.Const;
 import cn.krisez.car.ui.video.VideoDetailActivity;

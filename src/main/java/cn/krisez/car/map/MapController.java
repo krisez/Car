@@ -20,7 +20,7 @@ import com.amap.api.maps.model.MyLocationStyle;
 import java.util.List;
 
 import cn.krisez.car.R;
-import cn.krisez.car.ui.trace.IMainView;
+import cn.krisez.car.ui.main.IMainView;
 
 public class MapController /*implements AMapLocationListener, LocationSource*/{
     private Context mContext;

@@ -21,7 +21,7 @@ import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 
 import cn.krisez.car.R;
-import cn.krisez.car.utils.AppBarStateChangeListener;
+import cn.krisez.car._interface.AppBarStateChangeListener;
 import cn.krisez.car.utils.DensityUtil;
 import cn.krisez.car.utils.LandLayoutVideo;
 

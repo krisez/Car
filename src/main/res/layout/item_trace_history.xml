@@ -4,13 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="150dp"
-    android:layout_margin="4dp"
-    app:cardCornerRadius="8dp">
+    android:layout_margin="@dimen/margin_small"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="4dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:padding="4dp"
+>
         <LinearLayout
             android:id="@+id/item_trace_ad"
             android:layout_width="match_parent"

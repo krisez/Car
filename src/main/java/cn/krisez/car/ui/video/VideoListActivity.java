@@ -7,11 +7,9 @@ import android.content.res.Configuration;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,6 +89,18 @@ public class VideoListActivity extends BaseActivity implements IVideoView {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+                int firstItem = ((LinearLayoutManager)recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+                int lastItem = ((LinearLayoutManager)recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+                if(GSYVideoManager.instance().getPlayPosition()>=0){
+                    if(firstItem>GSYVideoManager.instance().getPlayPosition()||GSYVideoManager.instance().getPlayPosition()>lastItem){
+                        //如果滑出去了上面和下面就是否，和今日头条一样
+                        //是否全屏
+                        if(!GSYVideoManager.isFullState(VideoListActivity.this)) {
+                            GSYVideoManager.releaseAllVideos();
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
             }
         });
 
@@ -189,11 +199,6 @@ public class VideoListActivity extends BaseActivity implements IVideoView {
         }
         mAdapter.notifyDataSetChanged();
         mPopupWindow.dismiss();
-        //有点问题
-       /* new Handler().postDelayed(() -> {
-            mList.removeAll(mList);
-            mList.addAll(temp);
-        }, 500);*/
     }
 
 
@@ -231,14 +236,21 @@ public class VideoListActivity extends BaseActivity implements IVideoView {
             mAdapter.notifyItemRangeInserted(count, next.size());
             count += next.size() - 1;
         } else {
-            if (isMore)
-                error("没有更多...........");
             isMore = false;
         }
         mAdapter.removeFooter();
         isLoading = false;
+        if (!isMore){
+            mAdapter.addNoMoreFooter();
+        }
+    }
 
-
+    @Override
+    public void error(String s) {
+        super.error(s);
+        isLoading = false;
+        pager--;
+        mAdapter.removeFooter();
     }
 
     @Override

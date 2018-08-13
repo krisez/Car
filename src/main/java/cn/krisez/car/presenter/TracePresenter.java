@@ -10,7 +10,7 @@ import cn.krisez.car.network.MySubscribe;
 import cn.krisez.car.network.NetUtil;
 import cn.krisez.car.entity.TraceQuery;
 import cn.krisez.car.ui.trace.ITraceView;
-import cn.krisez.car.ui.trace.IView;
+import cn.krisez.car._interface.IView;
 
 public class TracePresenter extends Presenter {
 
@@ -46,6 +46,7 @@ public class TracePresenter extends Presenter {
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         mList = null;
     }
 

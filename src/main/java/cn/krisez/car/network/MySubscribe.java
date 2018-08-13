@@ -1,6 +1,11 @@
 package cn.krisez.car.network;
 
-import cn.krisez.car.ui.trace.IView;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
+import java.util.concurrent.TimeoutException;
+
+import cn.krisez.car._interface.IView;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
@@ -22,7 +27,12 @@ public abstract class MySubscribe<T> implements Observer<T> {
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-        mIView.error(e.getMessage());
+        if (e instanceof TimeoutException || e instanceof SocketTimeoutException
+                || e instanceof ConnectException){
+            mIView.error("网络连接超时~");
+        }else if(e instanceof UnknownHostException){
+            mIView.error("网络有点问题~");
+        }
     }
 
     @Override

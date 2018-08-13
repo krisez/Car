@@ -3,7 +3,7 @@ package cn.krisez.car.presenter;
 import android.content.Context;
 import android.content.Intent;
 
-import cn.krisez.car.ui.trace.IView;
+import cn.krisez.car._interface.IView;
 
 /**
  * Created by Krisez on 2017-12-13.

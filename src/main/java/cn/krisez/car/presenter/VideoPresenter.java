@@ -2,7 +2,6 @@ package cn.krisez.car.presenter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +9,7 @@ import java.util.List;
 import cn.krisez.car.entity.VideoQuery;
 import cn.krisez.car.network.MySubscribe;
 import cn.krisez.car.network.NetUtil;
-import cn.krisez.car.ui.trace.IView;
+import cn.krisez.car._interface.IView;
 import cn.krisez.car.ui.video.IVideoView;
 
 public class VideoPresenter extends Presenter {
@@ -46,6 +45,7 @@ public class VideoPresenter extends Presenter {
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         mList = null;
     }
 

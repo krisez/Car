@@ -2,7 +2,9 @@ package cn.krisez.car.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +33,7 @@ public class VideoHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public static final int TYPE_HEADER = 0;
     public static final int TYPE_NORMAL = 1;
     private static final int TYPE_FOOTER = 2;
+    private static final int TYPE_NOMORE = 3;
 
     private List<VideoQuery> mList;
     private Context mContext;
@@ -52,6 +55,9 @@ public class VideoHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 && getListSize() > 0) {
             return TYPE_NORMAL;
         }
+        if (noMore) {
+            return TYPE_NOMORE;
+        }
         return TYPE_FOOTER;
     }
 
@@ -63,6 +69,9 @@ public class VideoHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         } else if (viewType == TYPE_NORMAL) {
             View v = LayoutInflater.from(mContext).inflate(R.layout.item_video_history, parent, false);
             return new VideoHolder(v);
+        } else if (viewType == TYPE_NOMORE) {
+            View v = LayoutInflater.from(mContext).inflate(R.layout.item_no_more_footer, parent, false);
+            return new FooterHolder(v);
         }
         return null;
     }
@@ -77,16 +86,10 @@ public class VideoHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ((VideoHolder) holder).address.setText(query.getAddr());
 
             ((VideoHolder) holder).player.setUpLazy(query.getUrl(), true, null, null, "这是title");
-
             ((VideoHolder) holder).player.getTitleTextView().setVisibility(View.GONE);
             ((VideoHolder) holder).player.getBackButton().setVisibility(View.GONE);
 
-            ((VideoHolder) holder).player.getFullscreenButton().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    resolveFullBtn(((VideoHolder) holder).player);
-                }
-            });
+            ((VideoHolder) holder).player.getFullscreenButton().setOnClickListener(v -> resolveFullBtn(((VideoHolder) holder).player));
             ((VideoHolder) holder).player.setRotateViewAuto(!getListNeedAutoLand());
             ((VideoHolder) holder).player.setLockLand(!getListNeedAutoLand());
             ((VideoHolder) holder).player.setPlayTag("VideoPlayer");
@@ -134,7 +137,7 @@ public class VideoHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     super.onEnterFullscreen(url, objects);
                     GSYVideoManager.instance().setNeedMute(false);
                     isFull = true;
-                    ((VideoHolder) holder).player.getCurrentPlayer().getTitleTextView().setText((String) objects[0]);
+                    ((VideoHolder) holder).player.getCurrentPlayer().getTitleTextView().setText(query.getAddr());
                 }
 
                 @Override
@@ -147,16 +150,30 @@ public class VideoHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         VideoHistoryAdapter.this.onAutoComplete();
                     }
                 }
+
+            });
+
+            ((VideoHolder) holder).share.setOnClickListener(v -> {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TITLE,"分享给你看个视频");
+                intent.putExtra(Intent.EXTRA_TEXT,query.getUrl());
+                intent = Intent.createChooser(intent,"share");
+                mContext.startActivity(intent);
             });
         }
     }
 
     @Override
     public int getItemCount() {
-        return mList.size() + (moreLoad ? 1 : 0);
+        if (!noMore) {
+            return mList.size() + (moreLoad ? 1 : 0);
+        } else {
+            return mList.size() + 1;
+        }
     }
 
-    private int getListSize(){
+    private int getListSize() {
         return mList.size();
     }
 
@@ -169,6 +186,13 @@ public class VideoHistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public void addFooter() {
         moreLoad = true;
+        notifyItemInserted(mList.size());
+    }
+
+    private boolean noMore = false;
+
+    public void addNoMoreFooter() {
+        noMore = true;
         notifyItemInserted(mList.size());
     }
 
