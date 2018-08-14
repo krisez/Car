@@ -34,17 +34,19 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.krisez.car.R;
 import cn.krisez.car.base.CheckPermissionsActivity;
 import cn.krisez.car.enevt.TraceEvent;
 import cn.krisez.car.entity.CarRoute;
+import cn.krisez.car.entity.VideoQuery;
 import cn.krisez.car.map.MapController;
 import cn.krisez.car.map.MarkerInfoWindow;
 import cn.krisez.car.ui.trace.TraceHistoryActivity;
-import cn.krisez.car.utils.Const;
 import cn.krisez.car.ui.video.VideoDetailActivity;
+import cn.krisez.car.utils.Const;
 
 public class MainActivity extends CheckPermissionsActivity
         implements NavigationView.OnNavigationItemSelectedListener, IMainView {
@@ -89,19 +91,21 @@ public class MainActivity extends CheckPermissionsActivity
         mAMap.setMyTrafficStyle(myTrafficStyle);
         mAMap.setTrafficEnabled(true);
 
-        mAMap.setInfoWindowAdapter(new MarkerInfoWindow(this));
+        mMarkerInfoWindow = new MarkerInfoWindow(this);
+        mAMap.setInfoWindowAdapter(mMarkerInfoWindow);
 
-        /*mAMap.setOnMarkerClickListener(marker -> {
-            Toast.makeText(MainActivity.this, "点击Marker", Toast.LENGTH_SHORT).show();
+        mAMap.setOnMarkerClickListener(marker -> {
+            Toast.makeText(MainActivity.this, "" + marker.getTitle(), Toast.LENGTH_SHORT).show();
             return true;
-        });*/
+        });
 
         mAMap.setOnInfoWindowClickListener(marker -> {
-            startActivity(new Intent(MainActivity.this, VideoDetailActivity.class));
+            VideoDetailActivity.intentTo(this, mVideos.get(index));
         });
     }
 
     Marker marker;
+    private MarkerInfoWindow mMarkerInfoWindow;
 
     public void setMarker() {
         mSwitch = findViewById(R.id.map_switch);
@@ -120,14 +124,14 @@ public class MainActivity extends CheckPermissionsActivity
         marker = controller.setMarkerOption(options).getMarker();
 
         mSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(!isChecked){
+            if (!isChecked) {
                 follow = false;
                 LatLngBounds.Builder builder = LatLngBounds.builder();
                 for (int i = 0; i < list.size(); i++) {
                     builder.include(list.get(i));
                 }
                 mAMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 0));
-            }else follow = true;
+            } else follow = true;
         });
     }
 
@@ -153,15 +157,17 @@ public class MainActivity extends CheckPermissionsActivity
     private Switch mSwitch;
     private boolean follow = false;
 
+    private int index = -1;
+
     public void startAnimation(View view) {
         mSwitch.setVisibility(View.VISIBLE);
         marker.showInfoWindow();
         if (tvShowSpeed.getVisibility() == View.GONE) {
             tvShowSpeed.setVisibility(View.VISIBLE);
         }
-        animator = (ValueAnimator) controller.getMarkerAnimator(46000);
+        animator = (ValueAnimator) controller.getMarkerAnimator(30000);
         animator.addUpdateListener(animation -> {
-            if(follow){
+            if (follow) {
                 CarRoute carRoute = (CarRoute) animation.getAnimatedValue();
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(carRoute.getLatLng()).bearing(-(float) carRoute.getBearing()).zoom(18).tilt(45).build();
@@ -170,6 +176,13 @@ public class MainActivity extends CheckPermissionsActivity
             mProgressBar.setProgress((int) (animation.getAnimatedFraction() * 100));
             if (animation.getAnimatedFraction() == 1) {
                 tvShowSpeed.setVisibility(View.GONE);
+            }
+            if (requestImg) {
+                if ((int) (mVideos.size() * animation.getAnimatedFraction()) > index) {
+                    index++;
+                    if (index != mVideos.size())
+                        mMarkerInfoWindow.setImg(mVideos.get(index).getThumb());
+                }
             }
         });
     }
@@ -189,6 +202,7 @@ public class MainActivity extends CheckPermissionsActivity
         controller = controller.clearTrace();
         if (animator != null && animator.isStarted()) {
             animator.end();
+            animator.removeAllUpdateListeners();
         }
         if (marker != null) {
             marker.remove();
@@ -208,6 +222,15 @@ public class MainActivity extends CheckPermissionsActivity
     @Override
     public void speed(String v) {
         tvShowSpeed.setText("当前时速：" + v + "km");
+    }
+
+    List<VideoQuery> mVideos = new ArrayList<>();
+    private boolean requestImg = false;
+
+    @Override
+    public void requestVideo(List<VideoQuery> list) {
+        mVideos.addAll(list);
+        requestImg = true;
     }
 
     @Override

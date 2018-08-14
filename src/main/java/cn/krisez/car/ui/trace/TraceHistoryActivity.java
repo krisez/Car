@@ -67,7 +67,6 @@ public class TraceHistoryActivity extends BaseActivity implements ITraceView {
 
     @Override
     protected void filterClick(View v) {
-        //TODO:根据距离、时间筛选
         SpreadView layout = (SpreadView) getLayoutInflater().inflate(R.layout.popwindow, null);
         initLayout(layout);
         mPopupWindow = new PopupWindow(layout,

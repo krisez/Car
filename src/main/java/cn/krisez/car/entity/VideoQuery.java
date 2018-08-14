@@ -1,6 +1,8 @@
 package cn.krisez.car.entity;
 
-public class VideoQuery {
+import java.io.Serializable;
+
+public class VideoQuery implements Serializable{
     private String thumb;
     private String time;// xxxx-xx-xx xx:xx:xx
     private String url;//播放地址

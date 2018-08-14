@@ -1,8 +1,9 @@
 package cn.krisez.car.ui.video;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -12,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder;
 import com.shuyu.gsyvideoplayer.listener.GSYSampleCallBack;
@@ -22,7 +24,7 @@ import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 
 import cn.krisez.car.R;
 import cn.krisez.car._interface.AppBarStateChangeListener;
-import cn.krisez.car.utils.DensityUtil;
+import cn.krisez.car.entity.VideoQuery;
 import cn.krisez.car.utils.LandLayoutVideo;
 
 public class VideoDetailActivity extends AppCompatActivity {
@@ -38,6 +40,13 @@ public class VideoDetailActivity extends AppCompatActivity {
 
     private AppBarStateChangeListener.State curState;
 
+    private VideoQuery mVideoQuery;
+
+    public static void intentTo(Context context, VideoQuery videoQuery){
+        Intent intent = new Intent(context,VideoDetailActivity.class);
+        intent.putExtra("video",videoQuery);
+        context.startActivity(intent);
+    }
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -55,15 +64,15 @@ public class VideoDetailActivity extends AppCompatActivity {
 
         appBar.addOnOffsetChangedListener(appBarStateChangeListener);
 
-        String url = "http://krisez.cn/video/gratewall.mp4";
-
         mLandLayoutVideo = findViewById(R.id.detail_player);
+        mVideoQuery = (VideoQuery) getIntent().getSerializableExtra("video");
 
         //增加封面
         ImageView imageView = new ImageView(this);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        Bitmap bitmap = DensityUtil.readBitMap(this, R.drawable.video_info);
-        imageView.setImageBitmap(bitmap);
+        //Bitmap bitmap = DensityUtil.readBitMap(this, R.drawable.video_info);
+        //imageView.setImageBitmap(bitmap);
+        Glide.with(this).load(mVideoQuery.getThumb()).into(imageView);
 
         //增加title
         mLandLayoutVideo.getTitleTextView().setVisibility(View.GONE);
@@ -82,9 +91,9 @@ public class VideoDetailActivity extends AppCompatActivity {
                 .setShowFullAnimation(false)
                 .setNeedLockFull(true)
                 .setSeekRatio(1)
-                .setUrl(url)
+                .setUrl(mVideoQuery.getUrl())
                 .setCacheWithPlay(false)
-                .setVideoTitle("长城")
+                .setVideoTitle(mVideoQuery.getAddr())
                 .setVideoAllCallBack(new GSYSampleCallBack() {
 
                     @Override
@@ -212,7 +221,7 @@ public class VideoDetailActivity extends AppCompatActivity {
             } else if (state == AppBarStateChangeListener.State.COLLAPSED) {
                 //折叠状态
                 //如果是小窗口就不需要处理
-                toolbarLayout.setTitle("长城");
+                toolbarLayout.setTitle(mVideoQuery.getAddr());
                 if (!isSamll && isPlay) {
                     isSamll = true;
                     int size = CommonUtil.dip2px(VideoDetailActivity.this, 150);

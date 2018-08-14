@@ -17,15 +17,17 @@ import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.Polyline;
 import com.amap.api.maps.model.PolylineOptions;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-import cn.krisez.car.network.MySubscribe;
-import cn.krisez.car.network.NetUtil;
 import cn.krisez.car.R;
 import cn.krisez.car.entity.CarRoute;
+import cn.krisez.car.entity.VideoQuery;
+import cn.krisez.car.network.MySubscribe;
+import cn.krisez.car.network.NetUtil;
 import cn.krisez.car.ui.main.IMainView;
 
 public class MapTrace {
@@ -56,9 +58,22 @@ public class MapTrace {
             @Override
             public void onError(Throwable e) {
                 super.onError(e);
-                mIMainView.error(e.getMessage());
             }
         }, id, true);
+
+        List<VideoQuery> list = new ArrayList<>();
+
+        NetUtil.INSTANCE().createVideo(new MySubscribe<List<VideoQuery>>(mIMainView) {
+            @Override
+            public void onNext(List<VideoQuery> l) {
+                list.addAll(l);
+            }
+
+            @Override
+            public void onComplete() {
+                mIMainView.requestVideo(list);
+            }
+        }, "video", id, 1, true);
     }
 
     public Polyline getPolyline() {
@@ -182,7 +197,7 @@ public class MapTrace {
             mSpeedList = speedList;
             t = duration / 1000 / (speedList.size() - 1);
             a = new double[speedList.size() - 1];
-            mMultiple = duration / 1000 ;
+            mMultiple = duration / 1000;
             //真实距离
             for (int i = 0; i < speedList.size() - 1; ++i) {
                 double k = (double) AMapUtils.calculateLineDistance(speedList.get(i).getLatLng(), speedList.get(i + 1).getLatLng());
@@ -195,10 +210,10 @@ public class MapTrace {
 
             //中间段的时间
             float tp = 1f / (speedList.size() - 1);
-            temp = new float[speedList.size()-1];
+            temp = new float[speedList.size() - 1];
             temp[0] = 0;
             for (int i = 1; i < temp.length; i++) {
-                temp[i] = temp[i-1] + tp;
+                temp[i] = temp[i - 1] + tp;
             }
 
             //模拟距离
