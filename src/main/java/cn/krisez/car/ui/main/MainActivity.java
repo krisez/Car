@@ -29,6 +29,7 @@ import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyTrafficStyle;
+import com.bumptech.glide.Glide;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -99,9 +100,7 @@ public class MainActivity extends CheckPermissionsActivity
             return true;
         });
 
-        mAMap.setOnInfoWindowClickListener(marker -> {
-            VideoDetailActivity.intentTo(this, mVideos.get(index));
-        });
+        mAMap.setOnInfoWindowClickListener(marker -> VideoDetailActivity.intentTo(this, mVideos.get(index)));
     }
 
     Marker marker;
@@ -178,10 +177,9 @@ public class MainActivity extends CheckPermissionsActivity
                 tvShowSpeed.setVisibility(View.GONE);
             }
             if (requestImg) {
-                if ((int) (mVideos.size() * animation.getAnimatedFraction()) > index) {
-                    index++;
-                    if (index != mVideos.size())
-                        mMarkerInfoWindow.setImg(mVideos.get(index).getThumb());
+                index = (int) (mVideos.size() * animation.getAnimatedFraction());
+                if(index != mVideos.size()){
+                    mMarkerInfoWindow.setImg(mVideos.get(index).getThumb());
                 }
             }
         });

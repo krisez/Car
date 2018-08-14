@@ -22,7 +22,7 @@ import java.util.List;
 import cn.krisez.car.R;
 import cn.krisez.car.ui.main.IMainView;
 
-public class MapController /*implements AMapLocationListener, LocationSource*/{
+public class MapController /*implements AMapLocationListener, LocationSource*/ {
     private Context mContext;
 
     private MapView mMapView;
@@ -58,6 +58,7 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
     }
 
     private boolean isFirst = true;
+
     public MapController defaultAmap() {
 
         //显示定位按钮是否可以点击
@@ -70,7 +71,7 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
         myLocationStyle.myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.w));
         myLocationStyle.strokeColor(Color.WHITE);
         myLocationStyle.radiusFillColor(Color.argb(100, 20, 12, 20));
-        myLocationStyle.anchor(0.5f,0.7f);
+        myLocationStyle.anchor(0.5f, 0.7f);
         mMap.setMyLocationStyle(myLocationStyle);//设置定位蓝点的Style
         //显示定位层以及是否定位
         mMap.setMyLocationEnabled(true);
@@ -83,7 +84,7 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
 
             @Override
             public void onCameraChangeFinish(CameraPosition cameraPosition) {
-                if(isFirst) {
+                if (isFirst) {
                     myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER);
                     myLocationStyle.interval(2000);
                     mMap.setMyLocationStyle(myLocationStyle);//设置定位蓝点的Style
@@ -98,12 +99,13 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
      * marker设置处
      */
     private Marker mMarker;
-    public MapController setMarkerOption(MarkerOptions option){
+
+    public MapController setMarkerOption(MarkerOptions option) {
         mMarker = new MapMarker(mMapView).getMarker(option);
         return this;
     }
 
-    public Marker getMarker(){
+    public Marker getMarker() {
         return mMarker;
     }
 
@@ -112,22 +114,24 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
      */
 
     private MapTrace mMapTrace;
-    public MapController setTrace(String id){
-        mMapTrace = new MapTrace(mMapView,mView);
+
+    public MapController setTrace(String id) {
+        mMapTrace = new MapTrace(mMapView, mView);
         mMapTrace.startTrace(id);
         return this;
     }
 
     Animator mAnimator;
-    public Animator getMarkerAnimator(float duration){
-        return mAnimator = mMapTrace.setAnimation(mMarker,duration);
+
+    public Animator getMarkerAnimator(float duration) {
+        return mAnimator = mMapTrace.setAnimation(mMarker, duration);
     }
 
-    public List<LatLng> getTracePoints(){
+    public List<LatLng> getTracePoints() {
         return mMapTrace.getPolyline().getPoints();
     }
 
-    public MapController clearTrace(){
+    public MapController clearTrace() {
         mMapTrace.getPolyline().remove();
         return this;
     }
@@ -150,8 +154,8 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
                 mTextureMapView.onResume();
             }
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && mAnimator!=null) {
-            if(mAnimator.isStarted()&&mAnimator.isPaused())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && mAnimator != null) {
+            if (mAnimator.isStarted() && mAnimator.isPaused())
                 mAnimator.resume();
         }
     }
@@ -164,9 +168,9 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
                 mTextureMapView.onPause();
             }
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && mAnimator!=null) {
-            if(mAnimator.isStarted()&&mAnimator.isRunning())
-            mAnimator.pause();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && mAnimator != null) {
+            if (mAnimator.isStarted() && mAnimator.isRunning())
+                mAnimator.pause();
         }
     }
 
@@ -181,8 +185,6 @@ public class MapController /*implements AMapLocationListener, LocationSource*/{
         if (mContext != null) {
             mContext = null;
         }
-        if(mAnimator!=null&&mAnimator.isStarted())
-        mAnimator.end();
     }
 
     public void create(Bundle savedInstanceState) {

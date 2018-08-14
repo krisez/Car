@@ -19,7 +19,7 @@ public class MarkerInfoWindow implements AMap.InfoWindowAdapter {
 
     public MarkerInfoWindow(Context context) {
         mContext = context;
-        mView = View.inflate(mContext, R.layout.map_marker_info_window,null);
+        mView = View.inflate(mContext, R.layout.map_marker_info_window, null);
         mImageView = mView.findViewById(R.id.map_info_img);
     }
 
@@ -33,8 +33,7 @@ public class MarkerInfoWindow implements AMap.InfoWindowAdapter {
         return null;
     }
 
-    public void setImg(String url){
-        Log.d("MarkerInfoWindow", "setImg:" + url);
+    public void setImg(String url) {
         Glide.with(mContext).load(url).into(mImageView);
     }
 }
