@@ -253,7 +253,6 @@ public class MapTrace {
             double current = start * c + a[index] * c * c / 2;
             float v = (float) (start + a[index] * c);//当前速度
             ss += current;
-            //EventBus.getDefault().post(new SpeedEvent((v * 3.6f)));
             String speed = String.format(Locale.CHINA, "%.2f", (v * 3.6f));
             mIMainView.speed(speed);
             //实际距离，真实距离    totalDistance
