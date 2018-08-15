@@ -14,7 +14,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,7 +29,6 @@ import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyTrafficStyle;
-import com.bumptech.glide.Glide;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -40,6 +39,7 @@ import java.util.List;
 
 import cn.krisez.car.R;
 import cn.krisez.car.base.CheckPermissionsActivity;
+import cn.krisez.car.base.LoadFragment;
 import cn.krisez.car.enevt.TraceEvent;
 import cn.krisez.car.entity.CarRoute;
 import cn.krisez.car.entity.VideoQuery;
@@ -55,7 +55,7 @@ public class MainActivity extends CheckPermissionsActivity
     private MapView mMapView;
     private TextView tvShowSpeed;
     private ConstraintLayout mBottom;
-    private ProgressBar mProgressBar;
+    private SeekBar mSeekBar;
     private AMap mAMap;
 
     @Override
@@ -78,7 +78,7 @@ public class MainActivity extends CheckPermissionsActivity
         mMapView = findViewById(R.id.mv_show);
         tvShowSpeed = findViewById(R.id.tv_show_speed);
         mBottom = findViewById(R.id.bottom);
-        mProgressBar = findViewById(R.id.pb_fraction);
+        mSeekBar = findViewById(R.id.pb_fraction);
 
         controller = new MapController(this);
         controller.map(mMapView).view(this).defaultAmap().create(savedInstanceState);
@@ -158,6 +158,12 @@ public class MainActivity extends CheckPermissionsActivity
 
     private int index = -1;
 
+    /**
+     * 开始动画
+     * 初始化以及监听添加
+     *
+     * @param view
+     */
     public void startAnimation(View view) {
         mSwitch.setVisibility(View.VISIBLE);
         marker.showInfoWindow();
@@ -172,14 +178,37 @@ public class MainActivity extends CheckPermissionsActivity
                         .target(carRoute.getLatLng()).bearing(-(float) carRoute.getBearing()).zoom(18).tilt(45).build();
                 mAMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             }
-            mProgressBar.setProgress((int) (animation.getAnimatedFraction() * 100));
+            mSeekBar.setProgress((int) (animation.getAnimatedFraction() * 100));
             if (animation.getAnimatedFraction() == 1) {
                 tvShowSpeed.setVisibility(View.GONE);
             }
             if (requestImg) {
                 index = (int) (mVideos.size() * animation.getAnimatedFraction());
-                if(index != mVideos.size()){
+                if (index != mVideos.size()) {
                     mMarkerInfoWindow.setImg(mVideos.get(index).getThumb());
+                }
+            }
+        });
+
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                if (!animator.isPaused()) {
+                    error("请先暂停,再操作");
+                }
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if(animator.isPaused()){
+                    animator.setCurrentPlayTime(seekBar.getProgress() * 300);
                 }
             }
         });
@@ -207,14 +236,14 @@ public class MainActivity extends CheckPermissionsActivity
         }
         mSwitch.setVisibility(View.GONE);
         mBottom.setVisibility(View.GONE);
-        mProgressBar.setVisibility(View.GONE);
+        mSeekBar.setVisibility(View.GONE);
     }
 
     @Override
     public void traceOver() {
         setMarker();
         mBottom.setVisibility(View.VISIBLE);
-        mProgressBar.setVisibility(View.VISIBLE);
+        mSeekBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -265,9 +294,9 @@ public class MainActivity extends CheckPermissionsActivity
         } else if (id == R.id.nav_video_history) {
             startActivity(new Intent(Const.ACTION_VIDEO_LIST));
         } else if (id == R.id.nav_setting) {
-
+            startActivity(new Intent(MainActivity.this, LoadFragment.class).putExtra("cls", "set"));
         } else if (id == R.id.nav_about) {
-
+            startActivity(new Intent(MainActivity.this, LoadFragment.class).putExtra("cls", "about"));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

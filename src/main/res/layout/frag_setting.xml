@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_choose_player"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_small"
+        android:text="@string/choose_player"
+        android:textColor="@color/black"
+        android:textSize="@dimen/tv_normal_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/set_layout_choose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_choose_player">
+
+        <TextView
+            android:id="@+id/tv_media_player"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="@string/media_player"
+            android:textColor="@color/dark_gray"
+            android:textSize="@dimen/tv_small_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_ijk_player"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="@string/ijk_player"
+            android:textColor="@color/dark_gray"
+            android:textSize="@dimen/tv_small_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_media_player" />
+
+
+        <RadioGroup
+            android:id="@+id/set_choose_player"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/android_player"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_small"
+                />
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/ijk_player"
+                android:layout_width="wrap_content"
+                android:layout_margin="@dimen/margin_small"
+                android:layout_height="wrap_content"
+                android:checked="true" />
+        </RadioGroup>
+    </android.support.constraint.ConstraintLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/set_layout_choose" />
+
+    <TextView
+        android:id="@+id/set_clear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_small"
+        android:text="@string/clear_cache"
+        android:textColor="@color/black"
+        android:textSize="@dimen/tv_normal_size"
+        app:layout_constraintTop_toBottomOf="@id/set_layout_choose" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/margin_small"
+        android:background="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/set_clear" />
+
+</android.support.constraint.ConstraintLayout>

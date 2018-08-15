@@ -116,4 +116,8 @@
     <string name="reset">重置</string>
     <string name="ok">确定</string>
     <string name="have_line">我也是有底线的~</string>
+    <string name="choose_player">选择播放内核</string>
+    <string name="clear_cache">清除缓存</string>
+    <string name="media_player">系统播放器</string>
+    <string name="ijk_player">IJKPlayer播放器</string>
 </resources>
