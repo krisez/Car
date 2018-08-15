@@ -256,6 +256,7 @@ public class MainActivity extends CheckPermissionsActivity
 
     @Override
     public void requestVideo(List<VideoQuery> list) {
+        mVideos.clear();
         mVideos.addAll(list);
         requestImg = true;
     }
