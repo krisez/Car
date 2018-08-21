@@ -1,5 +1,9 @@
 package cn.krisez.car;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,17 +22,17 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TextView textView = new TextView(this);
-        textView.setText("car");
-        addContentView(textView,new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
+        setContentView(R.layout.activity_welcome);
+        TextView textView = findViewById(R.id.tv_welcome);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(textView,"rotation",0f,180f,0f,360f,0f);
+        animator.setDuration(2000);
+        animator.start();
+        animator.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void run() {
+            public void onAnimationEnd(Animator animation) {
                 startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
                 finish();
             }
-        },2000);
+        });
     }
 }

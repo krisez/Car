@@ -66,6 +66,7 @@ public class MapTrace {
         NetUtil.INSTANCE().createVideo(new MySubscribe<List<VideoQuery>>(mIMainView) {
             @Override
             public void onNext(List<VideoQuery> l) {
+                list.clear();
                 list.addAll(l);
             }
 
