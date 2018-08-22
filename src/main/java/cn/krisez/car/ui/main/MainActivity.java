@@ -228,6 +228,18 @@ public class MainActivity extends CheckPermissionsActivity
                 }
             }
         });
+        moveCamera();
+    }
+
+    private void moveCamera() {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        List<LatLng> a = controller.getTracePoints();
+        for (int i = 0; i < a.size(); i++) {
+            builder.include(a.get(i));
+        }
+        if(!builder.build().contains(mAMap.getCameraPosition().target)){
+            mAMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 0));
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -238,6 +250,7 @@ public class MainActivity extends CheckPermissionsActivity
         }
         if (animator != null && animator.isPaused()) {
             animator.resume();
+            moveCamera();
         }
     }
 
