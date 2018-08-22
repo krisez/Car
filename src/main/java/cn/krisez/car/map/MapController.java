@@ -113,26 +113,26 @@ public class MapController /*implements AMapLocationListener, LocationSource*/ {
      * trace 设置处
      */
 
-    private MapTrace mMapTrace;
 
     public MapController setTrace(String id) {
-        mMapTrace = new MapTrace(mMapView, mView);
-        mMapTrace.startTrace(id);
+        MapTrace.INSTANCE().init(mMapView, mView);
+        clearTrace();
+        MapTrace.INSTANCE().startTrace(id);
         return this;
     }
 
     Animator mAnimator;
 
     public Animator getMarkerAnimator(float duration) {
-        return mAnimator = mMapTrace.setAnimation(mMarker, duration);
+        return mAnimator = MapTrace.INSTANCE().setAnimation(mMarker, duration);
     }
 
     public List<LatLng> getTracePoints() {
-        return mMapTrace.getPolyline().getPoints();
+        return MapTrace.INSTANCE().getPolyline().getPoints();
     }
 
     public MapController clearTrace() {
-        mMapTrace.getPolyline().remove();
+        MapTrace.INSTANCE().removeLine();
         return this;
     }
 
@@ -153,10 +153,6 @@ public class MapController /*implements AMapLocationListener, LocationSource*/ {
             if (mTextureMapView != null) {
                 mTextureMapView.onResume();
             }
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && mAnimator != null) {
-            if (mAnimator.isStarted() && mAnimator.isPaused())
-                mAnimator.resume();
         }
     }
 
@@ -185,6 +181,8 @@ public class MapController /*implements AMapLocationListener, LocationSource*/ {
         if (mContext != null) {
             mContext = null;
         }
+
+        MapTrace.INSTANCE().destroy();
     }
 
     public void create(Bundle savedInstanceState) {

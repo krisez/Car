@@ -12,8 +12,10 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -56,6 +58,8 @@ public class MainActivity extends CheckPermissionsActivity
     private TextView tvShowSpeed;
     private ConstraintLayout mBottom;
     private SeekBar mSeekBar;
+    private ImageButton mLocateCar;
+
     private AMap mAMap;
 
     @Override
@@ -79,6 +83,7 @@ public class MainActivity extends CheckPermissionsActivity
         tvShowSpeed = findViewById(R.id.tv_show_speed);
         mBottom = findViewById(R.id.bottom);
         mSeekBar = findViewById(R.id.pb_fraction);
+        mLocateCar = findViewById(R.id.ib_locate_car);
 
         controller = new MapController(this);
         controller.map(mMapView).view(this).defaultAmap().create(savedInstanceState);
@@ -165,6 +170,10 @@ public class MainActivity extends CheckPermissionsActivity
      * @param view
      */
     public void startAnimation(View view) {
+        if (animator != null && animator.isStarted()) {
+            animator.end();
+            animator.removeAllUpdateListeners();
+        }
         mSwitch.setVisibility(View.VISIBLE);
         marker.showInfoWindow();
         if (tvShowSpeed.getVisibility() == View.GONE) {
@@ -199,7 +208,7 @@ public class MainActivity extends CheckPermissionsActivity
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                if (!animator.isPaused()) {
+                if (!animator.isPaused() && animator.isRunning()) {
                     error("请先暂停,再操作");
                 }
             }
@@ -207,8 +216,15 @@ public class MainActivity extends CheckPermissionsActivity
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                if(animator.isPaused()){
-                    animator.setCurrentPlayTime(seekBar.getProgress() * 300);
+                int s = seekBar.getProgress();
+                s *= 300;
+                if (animator.isPaused() && animator.isRunning()) {
+                    animator.setCurrentPlayTime(s);
+                }
+                if (animator != null && !animator.isRunning()) {
+                    animator.start();
+                    animator.setCurrentPlayTime(s);
+                    animator.pause();
                 }
             }
         });
@@ -226,6 +242,10 @@ public class MainActivity extends CheckPermissionsActivity
     }
 
     public void clear(View view) {
+        clear();
+    }
+
+    private void clear() {
         controller = controller.clearTrace();
         if (animator != null && animator.isStarted()) {
             animator.end();
@@ -237,13 +257,23 @@ public class MainActivity extends CheckPermissionsActivity
         mSwitch.setVisibility(View.GONE);
         mBottom.setVisibility(View.GONE);
         mSeekBar.setVisibility(View.GONE);
+        mLocateCar.setVisibility(View.GONE);
+    }
+
+    public void locateCar(View view) {
+        mAMap.animateCamera(CameraUpdateFactory.changeLatLng(marker.getPosition()));
     }
 
     @Override
     public void traceOver() {
+        if(marker != null) {
+            marker.remove();
+        }
         setMarker();
         mBottom.setVisibility(View.VISIBLE);
         mSeekBar.setVisibility(View.VISIBLE);
+        mSeekBar.setProgress(0);
+        mLocateCar.setVisibility(View.VISIBLE);
     }
 
     @Override

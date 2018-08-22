@@ -30,20 +30,41 @@ import cn.krisez.car.network.MySubscribe;
 import cn.krisez.car.network.NetUtil;
 import cn.krisez.car.ui.main.IMainView;
 
-public class MapTrace {
+class MapTrace {
+
+    private static MapTrace INSTANCE;
+
     private Polyline mPolyline;
     private List<CarRoute> mList;
 
     private AMap mAMap;
     private IMainView mIMainView;
 
-    MapTrace(MapView mapView, IMainView view) {
+    private MapTrace() {
+    }
+
+    public static MapTrace INSTANCE() {
+        //先检查实例是否存在，如果不存在才进入下面的同步块
+        if (INSTANCE == null) {
+            synchronized (MapTrace.class) {
+                //再次检查实例是否存在，如果不存在才真正的创建实例
+                if (INSTANCE == null) {
+                    INSTANCE = new MapTrace();
+                }
+            }
+        }
+
+        return INSTANCE;
+    }
+
+    public void init(MapView mapView, IMainView view){
         this.mAMap = mapView.getMap();
         mList = new ArrayList<>();
         this.mIMainView = view;
     }
 
     public void startTrace(String id) {
+        mList.clear();
         NetUtil.INSTANCE().getPoints(new MySubscribe<List<CarRoute>>(mIMainView) {
             @Override
             public void onNext(List<CarRoute> carRoutes) {
@@ -179,6 +200,16 @@ public class MapTrace {
             }
         }
         return angle;
+    }
+
+    public void removeLine() {
+        if (getPolyline() != null) {
+            getPolyline().remove();
+        }
+    }
+
+    public void destroy() {
+        INSTANCE = null;
     }
 
     class SpeedInterpolator implements TimeInterpolator {
